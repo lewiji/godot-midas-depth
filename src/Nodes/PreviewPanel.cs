@@ -10,7 +10,7 @@ public partial class PreviewPanel : PanelContainer
     [OnReadyGet("%OutputTextureRect")] TextureRect _outputTextureRect = default!;
     [OnReadyGet("%LoadImageButton")] Button _loadImageButton = default!;
     [OnReadyGet("%ProcessDepthButton")] Button _processDepthButton = default!;
-    [OnReadyGet("%PreviewSprite")] Sprite3D _previewSprite = default!;
+    [OnReadyGet("%Preview3DSpatial")] SpatialPreview _spatialPreviewScene = default!;
     [OnReadyGet("%SelectedPathLabel")] Label _pathLabel = default!;
     [OnReadyGet("%DepthSlider")] Slider _depthSlider = default!;
     [OnReadyGet("%DepthEdit")] LineEdit _depthEdit = default!;
@@ -27,7 +27,7 @@ public partial class PreviewPanel : PanelContainer
     [OnReady]
     void ConnectSignals() {
         _loadImageButton.Connect("pressed", this, nameof(OnLoadImagePressed));
-        _processDepthButton.Connect("pressed", this, nameof(OnProcessDepthPressed));
+        _processDepthButton.Connect("pressed", this, nameof(EmitProcessDepthRequest));
         _depthSlider.Connect("value_changed", this, nameof(OnDepthChanged));
     }
 
@@ -40,19 +40,19 @@ public partial class PreviewPanel : PanelContainer
         EmitSignal(nameof(LoadImageRequested));
     }
     
-    void OnProcessDepthPressed() {
+    void EmitProcessDepthRequest() {
         EmitSignal(nameof(ProcessDepthRequested), _image);
     }
 
     [OnReady]
     void SetDepthUiValues() {
-        var depth = ((SpatialMaterial) _previewSprite.MaterialOverride).DepthScale;
+        var depth = _spatialPreviewScene.Depth;
         _depthEdit.Text = depth.ToString(CultureInfo.CurrentCulture);
         _depthSlider.Value = depth;
     }
 
     void OnDepthChanged(float value) {
-        ((SpatialMaterial) _previewSprite.MaterialOverride).DepthScale = value;
+        _spatialPreviewScene.Depth = value;
         _depthEdit.Text = value.ToString(CultureInfo.CurrentCulture);
     }
 
@@ -75,8 +75,6 @@ public partial class PreviewPanel : PanelContainer
     }
 
     public void SetSprite3dImage() {
-        _previewSprite.Texture = _previewTextureRect.Texture;
-        ((SpatialMaterial) _previewSprite.MaterialOverride).AlbedoTexture = _previewTextureRect.Texture;
-        ((SpatialMaterial) _previewSprite.MaterialOverride).DepthTexture = _outputTextureRect.Texture;
+        _spatialPreviewScene.SetSpriteTexture(_previewTextureRect.Texture, _outputTextureRect.Texture);
     }
 }

@@ -15,7 +15,21 @@ public partial class ImagePicker : MarginContainer {
 
     [OnReady]
     void ConnectFileDialogSignals() {
+        if (Main.Config.GetValue(Config.ConfigKey.LastPath) is string lastPath) {
+            InitialPath = lastPath;
+        }
         _fileDialog.Connect("file_selected", this, nameof(OnFileSelected));
+    }
+
+    [OnReady]
+    void LoadLastImage() {
+        var file = new File();
+        if (file.FileExists("res://tmp/input.png")) {
+            OnFileSelected("res://tmp/input.png");
+        }
+        if (file.FileExists("res://tmp/output.png")) {
+            OnFileSelected("res://tmp/output.png");
+        }
     }
 
     public void Open() {
@@ -32,5 +46,6 @@ public partial class ImagePicker : MarginContainer {
         }
 
         EmitSignal(nameof(PathSelected), path);
+        Main.Config.SetValue(Config.ConfigKey.LastPath, path.GetBaseDir());
     }
 }
