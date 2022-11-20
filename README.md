@@ -2,6 +2,8 @@
 
 Inspired by https://github.com/parkchamchi/DepthViewer
 
+https://user-images.githubusercontent.com/233380/202898966-9f1ea9a9-55f1-49a5-85dc-e5733ee0a836.mp4
+
 Uses the small midas depth prediction ONNX model to infer depth from an input texture in godot, to use as a depth map in a SpatialMaterial, plus a voxelised depth model using a MultiMeshInstance.
 
 Using a very large input texture will grind godot to a halt, I haven't yet optimised the voxel renderer.
