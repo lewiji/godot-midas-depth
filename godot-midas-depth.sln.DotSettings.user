@@ -1,2 +1,11 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005Cgodot_005Cprojects_005Cgodot_002Dmidas_002Ddepth_005Cassets_005Cweights_005CMiDaS_005Fmodel_002Dsmall_002Eonnx/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005Cgodot_005Cprojects_005Cgodot_002Dmidas_002Ddepth_005Cassets_005Cweights_005CMiDaS_005Fmodel_002Dsmall_002Eonnx/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;
+  &lt;Assembly Path="/home/lewiji/.nuget/packages/system.memory/4.5.3/lib/netstandard2.0/System.Memory.dll" /&gt;
+  &lt;Assembly Path="/home/lewiji/RiderProjects/godot-midas-depth/.mono/temp/bin/Debug/onnxruntime.dll" /&gt;
+  &lt;Assembly Path="/home/lewiji/.nuget/packages/microsoft.ml.onnxruntime.managed/1.13.1/lib/netstandard2.0/Microsoft.ML.OnnxRuntime.dll" /&gt;
+  &lt;Assembly Path="/home/lewiji/RiderProjects/godot-midas-depth/.mono/temp/bin/Debug/onnxruntime_providers_shared.dll" /&gt;
+&lt;/AssemblyExplorer&gt;</s:String>
+	
+	
+	</wpf:ResourceDictionary>

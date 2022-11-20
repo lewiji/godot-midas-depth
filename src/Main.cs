@@ -1,5 +1,4 @@
 using Godot;
-using Godot.Collections;
 using GodotMidasDepth.Inference;
 using GodotMidasDepth.Nodes;
 using GodotOnReady.Attributes;
@@ -16,7 +15,7 @@ public partial class Main : Node {
     [OnReady]
     void LoadInferenceModel() {
         _inferImageDepth = new InferImageDepth();
-        _inferImageDepth.LoadModel(InferImageDepth.DefaultModelPath);
+        _inferImageDepth.LoadModel();
     }
 
     [OnReady]

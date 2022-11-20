@@ -1,11 +1,10 @@
 ﻿using Godot;
 using Godot.Collections;
-using GodotOnReady.Attributes;
 
 namespace GodotMidasDepth;
 
 public partial class Config {
-    ConfigFile? _configFile;
+    readonly ConfigFile? _configFile;
     const string ConfigFilePath = "user://config.cfg";
     const string ConfigFileSection = "godot-midas";
 

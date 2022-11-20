@@ -1,25 +1,17 @@
 <Project Sdk="Godot.NET.Sdk/3.3.0">
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>GodotMidasDepth</RootNamespace>
     <LangVersion>10</LangVersion>
     <Nullable>enable</Nullable>
+    <Configurations>Debug;ExportDebug;ExportRelease;Release</Configurations>
+    <Platforms>AnyCPU;x86;x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <Configurations>ExportDebug;ExportRelease;Debug</Configurations>
-    <Platforms>AnyCPU</Platforms>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'ExportDebug' ">
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'ExportRelease' ">
-    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="GodotOnReady" Version="1.2.3" />
-    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.13.1" />    
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.13.1" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="assets\weights\MiDaS_model-small.onnx" />
