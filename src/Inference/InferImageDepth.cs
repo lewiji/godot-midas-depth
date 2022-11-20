@@ -42,11 +42,6 @@ public class InferImageDepth {
         inputImage.Convert(Image.Format.Rgbf);
         inputImage.Resize(_width, _height, Image.Interpolation.Cubic);
         _input.CopyFrom(inputImage);
-        using (var debugInputImageTex = new ImageTexture())
-        {
-            debugInputImageTex.CreateFromImage(_input);
-            ResourceSaver.Save("res://tmp/input.png", debugInputImageTex);
-        }
 
         //try {
         RunModel(_input);
@@ -62,12 +57,7 @@ public class InferImageDepth {
         var outputImage = new Image();
         outputImage.CreateFromData(_width, _height, false, Image.Format.Rf, bytes);
         outputImage.Resize((int)inputSize.x, (int)inputSize.y, Image.Interpolation.Cubic);
-        using (var debugOutputImageTex = new ImageTexture())
-        {
-            debugOutputImageTex.CreateFromImage(outputImage);
-            ResourceSaver.Save("res://tmp/output.png", debugOutputImageTex);
-        }
-        
+
         return outputImage;
     }
 

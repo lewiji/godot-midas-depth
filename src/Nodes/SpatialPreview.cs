@@ -10,7 +10,7 @@ public partial class SpatialPreview : Spatial {
 
     public float Depth {
         get {
-            if (_sprite3d is {MaterialOverlay: { }})
+            if (_sprite3d is {MaterialOverride: { }})
             {
                 return  ((SpatialMaterial) _sprite3d.MaterialOverride).DepthScale;
             }
@@ -18,7 +18,7 @@ public partial class SpatialPreview : Spatial {
         }
         set {
             _depth = value;
-            if (_sprite3d is {MaterialOverlay: { }}) 
+            if (_sprite3d is {MaterialOverride: { }}) 
             {
                 ((SpatialMaterial) _sprite3d.MaterialOverride).DepthScale = _depth;
             }
