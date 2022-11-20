@@ -24,6 +24,11 @@ public class InferImageDepth {
             SetDimensions(_session.InputMetadata["0"].Dimensions[2], _session.InputMetadata["0"].Dimensions[3]);
         }
     }
+
+    public float[]? GetData()
+    {
+        return (float[]?)_output?.Clone();
+    }
     
     void SetDimensions(int x, int y) {
         _width = x;
@@ -40,7 +45,7 @@ public class InferImageDepth {
         var inputSize = inputImage.GetSize();
 
         inputImage.Convert(Image.Format.Rgbf);
-        inputImage.Resize(_width, _height, Image.Interpolation.Cubic);
+        inputImage.Resize(_width, _height, Image.Interpolation.Lanczos);
         _input.CopyFrom(inputImage);
 
         //try {
@@ -53,12 +58,24 @@ public class InferImageDepth {
 
         if (_output == null) return null;
         
-        var bytes = _output.ToByteArray();
+        var normalisedOutput = NormaliseOutput(_output);
+        var bytes = normalisedOutput.ToByteArray();
         var outputImage = new Image();
         outputImage.CreateFromData(_width, _height, false, Image.Format.Rf, bytes);
-        outputImage.Resize((int)inputSize.x, (int)inputSize.y, Image.Interpolation.Cubic);
-
+        outputImage.Resize((int)inputSize.x, (int)inputSize.y, Image.Interpolation.Lanczos);
+        
         return outputImage;
+    }
+
+    float[] NormaliseOutput(float[] floats)
+    {
+        var depthMax = floats.Max();
+        var depthMin = floats.Min();
+        var depthRange = depthMax - depthMin;
+
+        var normalisedOutput = floats.Select(d => (d - depthMin) / depthRange)
+            .Select(n => ((1f - n) * 0f + n * 1f)).ToArray();
+        return normalisedOutput;
     }
 
     void RunModel(Image source) {
@@ -93,14 +110,7 @@ public class InferImageDepth {
 
         
         using var results = _session?.Run(inputs);
-        var output = results.First().AsEnumerable<float>().ToArray();
-
-        var depthMax = output.Max();
-        var depthMin = output.Min();
-        var depthRange = depthMax - depthMin;
-
-        _output = output.Select(d => (d - depthMin) / depthRange)
-            .Select(n => ((1f - n) * 0f + n * 1f)).ToArray();
+        _output = results?.First().AsEnumerable<float>().ToArray();
 
         results?.Dispose();
 

@@ -1,3 +1,4 @@
+using System.Globalization;
 using Godot;
 using GodotOnReady.Attributes;
 
@@ -6,6 +7,9 @@ namespace GodotMidasDepth.Nodes;
 public partial class SpatialPreview : Spatial {
     [OnReadyGet("%Camera")] Camera _camera = default!;
     [OnReadyGet("%PreviewSprite")] Sprite3D? _sprite3d;
+    [OnReadyGet("%DepthSlider")] Slider _depthSlider = default!;
+    [OnReadyGet("%DepthEdit")] LineEdit _depthEdit = default!;
+    
     float _depth = 0.05f;
 
     public float Depth {
@@ -23,6 +27,24 @@ public partial class SpatialPreview : Spatial {
                 ((SpatialMaterial) _sprite3d.MaterialOverride).DepthScale = _depth;
             }
         }
+    }
+
+    [OnReady]
+    void ConnectDepthSlider()
+    {
+        _depthSlider.Connect("value_changed", this, nameof(OnDepthChanged));
+    }
+    
+    [OnReady]
+    void SetDepthUiValues() {
+        var depth = Depth;
+        _depthEdit.Text = depth.ToString(CultureInfo.CurrentCulture);
+        _depthSlider.Value = depth;
+    }
+
+    void OnDepthChanged(float value) {
+        Depth = value;
+        _depthEdit.Text = value.ToString(CultureInfo.CurrentCulture);
     }
 
     public override void _Input(InputEvent @event) {
