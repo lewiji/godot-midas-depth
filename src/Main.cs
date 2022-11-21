@@ -40,6 +40,8 @@ public partial class Main : Node {
         if (output == null) return;
         _previewPanel.SetResultImage(output);
         _previewPanel.SetSprite3dImage();
+        _previewPanel.CreateVertexShadedMesh();
+        
         if (_inferImageDepth?.GetData() is { } depthData)
         {
             _previewPanel.CreatePointCloud(depthData);
