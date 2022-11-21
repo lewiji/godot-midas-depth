@@ -32,13 +32,16 @@ unique_name_in_owner = true
 
 [node name="Preview3d" parent="VBoxContainer/TabContainer" instance=ExtResource( 5 )]
 unique_name_in_owner = true
+margin_top = 24.0
 
 [node name="PointCloud3d" parent="VBoxContainer/TabContainer" instance=ExtResource( 3 )]
 unique_name_in_owner = true
+margin_top = 24.0
 
 [node name="VertexShadedMesh" parent="VBoxContainer/TabContainer" instance=ExtResource( 6 )]
 unique_name_in_owner = true
 visible = false
+margin_top = 24.0
 
 [node name="Toolbar" parent="VBoxContainer" instance=ExtResource( 2 )]
 unique_name_in_owner = true

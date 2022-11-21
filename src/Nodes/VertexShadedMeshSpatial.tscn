@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://3d_preview_env.tres" type="Environment" id=1]
 [ext_resource path="res://src/Nodes/VertexShadedMeshSpatial.cs" type="Script" id=2]
@@ -31,74 +31,6 @@ size = Vector2( 16, 16 )
 subdivide_width = 256
 subdivide_depth = 256
 
-[sub_resource type="Animation" id=4]
-length = 0.001
-tracks/0/type = "bezier"
-tracks/0/path = NodePath("MeshInstance:rotation_degrees:x")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"points": PoolRealArray( 75, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0 )
-}
-tracks/1/type = "bezier"
-tracks/1/path = NodePath("MeshInstance:rotation_degrees:y")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"points": PoolRealArray( 0, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0 )
-}
-tracks/2/type = "bezier"
-tracks/2/path = NodePath("MeshInstance:rotation_degrees:z")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/keys = {
-"points": PoolRealArray( 0, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0 )
-}
-
-[sub_resource type="Animation" id=5]
-resource_name = "swivel"
-length = 6.0
-loop = true
-tracks/0/type = "bezier"
-tracks/0/path = NodePath("MeshInstance:rotation_degrees:x")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = false
-tracks/0/keys = {
-"points": PoolRealArray( 75, -0.25, 0, 0.25, 0, 75, -0.25, 0, 0.25, 0, 75, -0.25, 0, 0.25, 0, 75, -0.25, 0, 0.25, 0, 75, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1.5, 3, 4.5, 6 )
-}
-tracks/1/type = "bezier"
-tracks/1/path = NodePath("MeshInstance:rotation_degrees:y")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"points": PoolRealArray( 0, -0.25, 0, 0.25, 0, -45, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 45, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1.5, 3, 4.5, 6 )
-}
-tracks/2/type = "bezier"
-tracks/2/path = NodePath("MeshInstance:rotation_degrees:z")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/imported = false
-tracks/2/enabled = false
-tracks/2/keys = {
-"points": PoolRealArray( 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
-"times": PoolRealArray( 0, 1.5, 3, 4.5, 6 )
-}
-
 [node name="VertexShadedMeshSpatial" type="Spatial"]
 unique_name_in_owner = true
 script = ExtResource( 2 )
@@ -114,15 +46,14 @@ unique_name_in_owner = true
 transform = Transform( 1, 0, 0, 0, 0.973431, 0.22898, 0, -0.22898, 0.973431, 0, 2.30667, 10 )
 fov = 90.0
 
-[node name="MeshInstance" type="MeshInstance" parent="."]
+[node name="MeshGimbal" type="Spatial" parent="."]
+unique_name_in_owner = true
+
+[node name="MeshInstance" type="MeshInstance" parent="MeshGimbal"]
 unique_name_in_owner = true
 transform = Transform( 1, 0, 0, 0, 0.258819, -0.965926, 0, 0.965926, 0.258819, 0, 0, 0 )
 mesh = SubResource( 1 )
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-autoplay = "swivel"
-anims/RESET = SubResource( 4 )
-anims/swivel = SubResource( 5 )
+skeleton = NodePath("../..")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 anchor_right = 1.0
@@ -172,9 +103,11 @@ unique_name_in_owner = true
 margin_left = 197.0
 margin_right = 255.0
 margin_bottom = 24.0
+mouse_filter = 1
 text = "0.001"
 
 [node name="VSeparator3" type="VSeparator" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 margin_left = 259.0
 margin_right = 263.0
 margin_bottom = 24.0
+mouse_filter = 1

@@ -1,20 +1,26 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://src/Nodes/VertexShadedMeshSpatial.tscn" type="PackedScene" id=1]
+[ext_resource path="res://src/Nodes/VertexShadedMesh.cs" type="Script" id=2]
 
 [node name="VertexShadedMesh" type="MarginContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource( 2 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 margin_right = 1024.0
 margin_bottom = 600.0
+mouse_filter = 2
 
 [node name="ViewportContainer" type="ViewportContainer" parent="VBoxContainer"]
 margin_right = 1024.0
 margin_bottom = 512.0
+mouse_filter = 2
 
 [node name="Viewport" type="Viewport" parent="VBoxContainer/ViewportContainer"]
+unique_name_in_owner = true
 size = Vector2( 1024, 512 )
 own_world = true
 handle_input_locally = false
