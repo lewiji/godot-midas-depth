@@ -34,17 +34,17 @@ public partial class VertexShadedMeshSpatial : Spatial {
 
 	public override void _Process(float delta) {
 		if (Input.IsActionPressed("rotate_cw")) {
-			_meshInstance.RotateY(-delta * _rotateSpeed);
+			_meshInstance.GlobalRotate(Vector3.Up, -delta * _rotateSpeed);
 		}
 		if (Input.IsActionPressed("rotate_ccw")) {
-			_meshInstance.RotateY(delta * _rotateSpeed);
+			_meshInstance.GlobalRotate(Vector3.Up, delta * _rotateSpeed);
 			
 		}
 		if (Input.IsActionPressed("rotate_up")) {
-			_meshInstance.RotateX(-delta * _rotateSpeed);
+			_meshInstance.RotateObjectLocal(Vector3.Right, -delta * _rotateSpeed);
 		}
 		if (Input.IsActionPressed("rotate_down")) {
-			_meshInstance.RotateX(delta * _rotateSpeed);
+			_meshInstance.RotateObjectLocal(Vector3.Right, delta * _rotateSpeed);
 			
 		}
 		if (Input.IsActionPressed("strafe_left")) {
