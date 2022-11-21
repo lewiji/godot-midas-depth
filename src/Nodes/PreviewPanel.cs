@@ -79,9 +79,11 @@ public partial class PreviewPanel : PanelContainer
         }
     }
 
-    public void CreateVertexShadedMesh() {
+    public void CreateVertexShadedMesh(Image outputImage) {
 	    if (_image != null) {
-		    _vertexShadedMesh.SetTextures(_previewTextureRect.Texture, _outputTextureRect.Texture);
+		    ImageTexture tex = new ImageTexture();
+		    tex.CreateFromImage(outputImage);
+		    _vertexShadedMesh.SetTextures(_previewTextureRect.Texture, tex);
 	    }
     }
 }

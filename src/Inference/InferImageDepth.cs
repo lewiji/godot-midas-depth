@@ -62,7 +62,7 @@ public class InferImageDepth {
         var bytes = normalisedOutput.ToByteArray();
         var outputImage = new Image();
         outputImage.CreateFromData(_width, _height, false, Image.Format.Rf, bytes);
-        outputImage.Resize((int)inputSize.x, (int)inputSize.y, Image.Interpolation.Lanczos);
+        outputImage.Resize((int)inputSize.x, (int)inputSize.y, Image.Interpolation.Cubic);
         
         return outputImage;
     }
