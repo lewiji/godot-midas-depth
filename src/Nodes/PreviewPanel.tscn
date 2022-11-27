@@ -1,10 +1,9 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://src/Nodes/PreviewPanel.cs" type="Script" id=1]
 [ext_resource path="res://src/Nodes/Toolbar.tscn" type="PackedScene" id=2]
-[ext_resource path="res://src/Nodes/PointCloud3d.tscn" type="PackedScene" id=3]
+[ext_resource path="res://theme_preview_panel.tres" type="Theme" id=3]
 [ext_resource path="res://src/Nodes/Preview2d.tscn" type="PackedScene" id=4]
-[ext_resource path="res://src/Nodes/Preview3d.tscn" type="PackedScene" id=5]
 [ext_resource path="res://src/Nodes/VertexShadedMesh.tscn" type="PackedScene" id=6]
 
 [node name="PreviewPanel" type="PanelContainer"]
@@ -13,6 +12,7 @@ margin_right = 1024.0
 margin_bottom = 600.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource( 3 )
 script = ExtResource( 1 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -24,20 +24,17 @@ margin_bottom = 593.0
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer"]
 unique_name_in_owner = true
 margin_right = 1010.0
-margin_bottom = 552.0
+margin_bottom = 548.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+tab_align = 0
 
 [node name="Preview2d" parent="VBoxContainer/TabContainer" instance=ExtResource( 4 )]
 unique_name_in_owner = true
-
-[node name="Preview3d" parent="VBoxContainer/TabContainer" instance=ExtResource( 5 )]
-unique_name_in_owner = true
-margin_top = 24.0
-
-[node name="PointCloud3d" parent="VBoxContainer/TabContainer" instance=ExtResource( 3 )]
-unique_name_in_owner = true
-margin_top = 24.0
+margin_left = 0.0
+margin_top = 15.0
+margin_right = 0.0
+margin_bottom = 0.0
 
 [node name="VertexShadedMesh" parent="VBoxContainer/TabContainer" instance=ExtResource( 6 )]
 unique_name_in_owner = true
@@ -46,3 +43,4 @@ margin_top = 24.0
 
 [node name="Toolbar" parent="VBoxContainer" instance=ExtResource( 2 )]
 unique_name_in_owner = true
+margin_top = 552.0

@@ -3,6 +3,8 @@
 [resource]
 code = "shader_type spatial;
 
+render_mode diffuse_lambert, blend_mix, depth_draw_opaque, cull_back, specular_schlick_ggx, ambient_light_disabled;
+
 uniform sampler2D albedo_texture : hint_albedo;
 uniform sampler2D depth_texture : hint_white;
 uniform float depth_scale = 2.0;

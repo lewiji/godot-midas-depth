@@ -10,12 +10,12 @@ public partial class PreviewPanel : PanelContainer
     [OnReadyGet("%Preview2d/%PreviewTextureRect")] TextureRect _previewTextureRect = default!;
     [OnReadyGet("%Preview2d/%OutputTextureRect")] TextureRect _outputTextureRect = default!;
     [OnReadyGet("%Toolbar/%LoadImageButton")] Button _loadImageButton = default!;
-    [OnReadyGet("%Toolbar/%ProcessDepthButton")] Button _processDepthButton = default!;
-    [OnReadyGet("%Preview3d/%Preview3DSpatial")] SpatialPreview _spatialPreviewScene = default!;
     [OnReadyGet("%Toolbar/%SelectedPathLabel")] Label _pathLabel = default!;
-    [OnReadyGet("%PointCloud3d/%PointCloudPreview")] PreviewPointCloud _pointCloud = default!;
     [OnReadyGet("%VertexShadedMesh/%VertexShadedMeshSpatial")] VertexShadedMeshSpatial _vertexShadedMesh = default!;
     [OnReadyGet("%TabContainer")] TabContainer _tabContainer = default!;
+    [OnReadyGet("%Toolbar/%XrCheckBox")] XrCheckBox _xrCheckBox = default!;
+    [OnReadyGet("%Toolbar/%DepthSlider")] Slider _depthSlider = default!;
+	[OnReadyGet("%Toolbar/%DepthSpinBox")] SpinBox _depthSpinBox = default!;
     
     
     Image? _image;
@@ -34,18 +34,25 @@ public partial class PreviewPanel : PanelContainer
     [OnReady]
     void ConnectSignals() {
         _loadImageButton.Connect("pressed", this, nameof(OnLoadImagePressed));
-        _processDepthButton.Connect("pressed", this, nameof(EmitProcessDepthRequest));
-        _pointCloud.Connect(nameof(PreviewPointCloud.XrToggled), this, nameof(OnXrToggled), new Array() {XrTargetScene.PointCloud});
-        _tabContainer.Connect("tab_changed", this, nameof(OnTabChanged));
+        _xrCheckBox.Connect(nameof(XrCheckBox.XrToggled), this, nameof(OnXrToggled));
+        _depthSlider.Connect("value_changed", this, nameof(OnDepthChanged));
+        _depthSpinBox.Connect("value_changed", this, nameof(OnDepthSpinBoxChanged));
+        OnDepthChanged((float)_depthSlider.Value);
     }
 
-    void OnTabChanged(int tab) {
-        if (tab == 2) {
-            _pointCloud.SetMultiMeshTransforms();
-        }
+    void OnDepthChanged(float value) {
+	    _depthSpinBox.Value = value;
+	    _vertexShadedMesh.CallDeferred(nameof(VertexShadedMeshSpatial.SetShaderDepth), value);
     }
 
-    void OnXrToggled(bool enabled, XrTargetScene targetScene) {
+    void OnDepthSpinBoxChanged(float value) {
+	    if (!Mathf.IsEqualApprox((float)_depthSlider.Value, value)) {
+		    _depthSlider.Value = value;
+	    }
+    }
+
+
+    void OnXrToggled(bool enabled) {
         if (enabled && _xrRoot == null) {
             _xrRoot = _xrRootScene.Instance<XrRoot>();
             AddChild(_xrRoot);
@@ -58,14 +65,14 @@ public partial class PreviewPanel : PanelContainer
         }
 
         if (_xrRoot != null && _xrRoot.IsInsideTree()) {
-            switch (targetScene) {
-                case XrTargetScene.PointCloud:
-                    _xrRoot.SetViewport(_pointCloud.GetParent<Viewport>());
-                    break;
-                case XrTargetScene.DepthMap:
-                    break;
-            }
+            _xrRoot.SetViewport(_vertexShadedMesh.GetParent<Viewport>());
         }
+    }
+
+    public void SwitchTab(int to) {
+	    if (_tabContainer.GetTabCount() > to) {
+		    _tabContainer.CurrentTab = to;
+	    }
     }
 
     void OnLoadImagePressed() {
@@ -95,29 +102,12 @@ public partial class PreviewPanel : PanelContainer
         _outputTextureRect.Texture = tex;
         ResourceSaver.Save("user://input_tmp.png", tex);
         ResourceSaver.Save("user://output_tmp.png", _previewTextureRect.Texture);
-        
-        /*#if TOOLS
-		    ResourceSaver.Save("res://tmp/input_tmp.png", tex);
-		    ResourceSaver.Save("res://tmp/output_tmp.png", _previewTextureRect.Texture);
-	    #endif*/
-    }
-
-    public void SetSprite3dImage() {
-        _spatialPreviewScene.SetSpriteTexture(_previewTextureRect.Texture, _outputTextureRect.Texture);
-    }
-
-    public void CreatePointCloud(float[] depth)
-    {
-        if (_image != null)
-        {
-            _pointCloud.SetData(_image, depth);
-        }
     }
 
     public void CreateVertexShadedMesh(Image outputImage) {
 	    if (_image != null) {
 		    ImageTexture tex = new ImageTexture();
-		    tex.Flags = (uint)Texture.FlagsEnum.Filter;
+		    outputImage.Resize(_image.GetWidth(), _image.GetHeight(), Image.Interpolation.Cubic);
 		    tex.CreateFromImage(outputImage, (uint)Texture.FlagsEnum.Filter);
 		    _vertexShadedMesh.SetTextures(_previewTextureRect.Texture, tex);
 	    }

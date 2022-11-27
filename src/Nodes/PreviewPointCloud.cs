@@ -9,12 +9,10 @@ public partial class PreviewPointCloud : Spatial
 {
     [OnReadyGet("%PointCloud")] MultiMeshInstance _pointCloud = default!;
     [OnReadyGet("%PointCloudPivot")] Spatial _pcPivot = default!;
-    [OnReadyGet("%XrCheckBox")] CheckBox _xrCheckbox = default!;
     [OnReadyGet("%DepthSlider")] Slider _depthSlider = default!;
     [OnReadyGet("%DepthEdit")] LineEdit _depthEdit = default!;
 
-    [Signal]
-    public delegate void XrToggled(bool enabled);
+    
     
 
     Image? _albedo;
@@ -22,7 +20,6 @@ public partial class PreviewPointCloud : Spatial
 
     [OnReady]
     void ConnectSignals() {
-        _xrCheckbox.Connect("toggled", this, nameof(OnXrToggled));
         _depthSlider.Connect("drag_ended", this, nameof(OnDepthChanged));
     }
 
@@ -33,9 +30,7 @@ public partial class PreviewPointCloud : Spatial
         }
     }
 
-    void OnXrToggled(bool enabled) {
-        EmitSignal(nameof(XrToggled), enabled);
-    }
+    
     
 
     public void SetData(Image albedo, float[] depthArray) {

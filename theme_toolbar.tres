@@ -1,0 +1,9 @@
+[gd_resource type="Theme" load_steps=2 format=2]
+
+[sub_resource type="StyleBoxLine" id=1]
+color = Color( 0.254902, 0.180392, 0.34902, 0.992157 )
+vertical = true
+
+[resource]
+VSeparator/constants/separation = 1
+VSeparator/styles/separator = SubResource( 1 )

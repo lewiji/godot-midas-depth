@@ -1,4 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://theme_toolbar.tres" type="Theme" id=1]
+[ext_resource path="res://src/Nodes/XrCheckBox.cs" type="Script" id=2]
 
 [sub_resource type="StyleBoxFlat" id=1]
 content_margin_left = 5.0
@@ -11,45 +14,97 @@ bg_color = Color( 0, 0, 0, 0.145098 )
 margin_top = 556.0
 margin_right = 1010.0
 margin_bottom = 586.0
+theme = ExtResource( 1 )
 custom_styles/panel = SubResource( 1 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 margin_left = 5.0
 margin_top = 5.0
 margin_right = 1005.0
-margin_bottom = 25.0
-custom_constants/separation = 8
+margin_bottom = 29.0
+custom_constants/separation = 7
 alignment = 2
+
+[node name="VSeparator3" type="VSeparator" parent="HBoxContainer"]
+margin_right = 1.0
+margin_bottom = 24.0
+
+[node name="XrCheckBox" type="CheckBox" parent="HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 8.0
+margin_right = 52.0
+margin_bottom = 24.0
+disabled = true
+text = "XR"
+script = ExtResource( 2 )
+
+[node name="VSeparator4" type="VSeparator" parent="HBoxContainer"]
+margin_left = 59.0
+margin_right = 60.0
+margin_bottom = 24.0
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+margin_left = 67.0
+margin_top = 6.0
+margin_right = 106.0
+margin_bottom = 17.0
+text = "Depth"
+
+[node name="DepthSlider" type="HSlider" parent="HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 113.0
+margin_top = 4.0
+margin_right = 233.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 120, 0 )
+size_flags_vertical = 4
+min_value = -10.0
+max_value = 10.0
+step = 0.001
+value = 2.0
+tick_count = 10
+
+[node name="DepthSpinBox" type="SpinBox" parent="HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 240.0
+margin_right = 314.0
+margin_bottom = 24.0
+mouse_filter = 1
+min_value = -10.0
+max_value = 10.0
+step = 0.001
+value = 2.0
+align = 3
+
+[node name="VSeparator5" type="VSeparator" parent="HBoxContainer"]
+margin_left = 321.0
+margin_right = 322.0
+margin_bottom = 24.0
+mouse_filter = 1
 
 [node name="SelectedPathLabel" type="Label" parent="HBoxContainer"]
 unique_name_in_owner = true
-margin_top = 3.0
-margin_right = 769.0
+margin_left = 329.0
+margin_top = 6.0
+margin_right = 935.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
 align = 2
 clip_text = true
 
 [node name="VSeparator2" type="VSeparator" parent="HBoxContainer"]
-margin_left = 777.0
-margin_right = 781.0
-margin_bottom = 20.0
+margin_left = 942.0
+margin_right = 943.0
+margin_bottom = 24.0
 
 [node name="LoadImageButton" type="Button" parent="HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 789.0
-margin_right = 875.0
-margin_bottom = 20.0
-text = "Load Image"
+margin_left = 950.0
+margin_right = 992.0
+margin_bottom = 24.0
+text = "Load"
 
 [node name="VSeparator" type="VSeparator" parent="HBoxContainer"]
-margin_left = 883.0
-margin_right = 887.0
-margin_bottom = 20.0
-
-[node name="ProcessDepthButton" type="Button" parent="HBoxContainer"]
-unique_name_in_owner = true
-margin_left = 895.0
+margin_left = 999.0
 margin_right = 1000.0
-margin_bottom = 20.0
-text = "Process Depth"
+margin_bottom = 24.0

@@ -25,14 +25,9 @@ public partial class Main : Node {
         _imagePicker.Connect(nameof(ImagePicker.ImageLoaded), _previewPanel, nameof(PreviewPanel.SetPreviewImage));
         _imagePicker.Connect(nameof(ImagePicker.PathSelected), _previewPanel, nameof(PreviewPanel.SetPathLabel));
         _imagePicker.Connect(nameof(ImagePicker.ImageLoaded), this, nameof(ProcessDepth));
-        _previewPanel.Connect(nameof(PreviewPanel.ProcessDepthRequested), this, nameof(OnProcessDepthRequested));
     }
 
     void ProcessDepth(Image image) {
-        CallDeferred(nameof(RunModel), image);
-    }
-
-    void OnProcessDepthRequested(Image image) {
         CallDeferred(nameof(RunModel), image);
     }
 
@@ -40,16 +35,13 @@ public partial class Main : Node {
         var output = _inferImageDepth?.Run(image);
         if (output == null) return;
         _previewPanel.SetResultImage(output);
-        _previewPanel.SetSprite3dImage();
         if (_inferImageDepth?.GetDataNormalised() is { } depthData)
         {
-            _previewPanel.CreatePointCloud(depthData);
-            
-            var bytes = depthData.ToByteArray();
+	        var bytes = depthData.ToByteArray();
             var outputImage = new Image();
             outputImage.CreateFromData(256, 256, false, Image.Format.Rf, bytes);
-            //outputImage.Resize((int)inputSize.x, (int)inputSize.y, Image.Interpolation.Cubic);
             _previewPanel.CreateVertexShadedMesh(outputImage);
+            _previewPanel.SwitchTab(1);
         }
     }
 }

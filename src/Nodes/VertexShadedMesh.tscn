@@ -31,6 +31,13 @@ unique_name_in_owner = true
 size = Vector2( 1024, 600 )
 own_world = true
 handle_input_locally = false
+msaa = 1
+debanding = true
 render_target_update_mode = 3
+shadow_atlas_size = 4096
+shadow_atlas_quad_0 = 1
+shadow_atlas_quad_1 = 1
+shadow_atlas_quad_2 = 2
+shadow_atlas_quad_3 = 3
 
 [node name="VertexShadedMeshSpatial" parent="VBoxContainer/ViewportContainer/Viewport" instance=ExtResource( 1 )]

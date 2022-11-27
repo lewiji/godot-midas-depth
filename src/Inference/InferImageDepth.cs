@@ -51,13 +51,7 @@ public class InferImageDepth {
         inputImage.Resize(_width, _height, Image.Interpolation.Lanczos);
         _input.CopyFrom(inputImage);
 
-        //try {
         RunModel(_input);
-        /*}
-        catch (Exception e) {
-            GD.Print($"Exception when running model: {e}");
-            return null;
-        }*/
 
         if (_output == null) return null;
         
@@ -96,7 +90,6 @@ public class InferImageDepth {
         }
 
         var dimensions = new ReadOnlySpan<int>(new []{1, 3, _height, _width});
-        //Tensor<float> t1 = new DenseTensor<float>(dimensions);
         var t1 = new DenseTensor<float>(dimensions);
         for (var y = 0; y < _height; y++) {
             for (var x = 0; x < _width; x++) {
@@ -111,17 +104,9 @@ public class InferImageDepth {
             NamedOnnxValue.CreateFromTensor<float>("0", t1),
         };
 
-        
         using var results = _session?.Run(inputs);
         _output = results?.First().AsEnumerable<float>().ToArray();
 
         results?.Dispose();
-
-        /*var min = output.Min();
-        var max = output.Max();
-            
-        for (var i = 0; i < output.Length; i++) {
-            _output![(i%_width)*_width + (i/_width)] = (output[i] - min) / (max - min); //col*_width + row;
-        }*/
     }
 }
