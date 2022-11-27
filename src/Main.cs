@@ -40,7 +40,7 @@ public partial class Main : Node {
         if (output == null) return;
         _previewPanel.SetResultImage(output);
         _previewPanel.SetSprite3dImage();
-        if (_inferImageDepth?.GetData() is { } depthData)
+        if (_inferImageDepth?.GetDataNormalised() is { } depthData)
         {
             _previewPanel.CreatePointCloud(depthData);
         }

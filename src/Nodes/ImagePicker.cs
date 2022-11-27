@@ -21,17 +21,6 @@ public partial class ImagePicker : MarginContainer {
         _fileDialog.Connect("file_selected", this, nameof(OnFileSelected));
     }
 
-    [OnReady]
-    void LoadLastImage() {
-        var file = new File();
-        if (file.FileExists("res://tmp/input.png")) {
-            OnFileSelected("res://tmp/input.png");
-        }
-        if (file.FileExists("res://tmp/output.png")) {
-            OnFileSelected("res://tmp/output.png");
-        }
-    }
-
     public void Open() {
         if (InitialPath != "") {
             _fileDialog.CurrentDir = InitialPath;

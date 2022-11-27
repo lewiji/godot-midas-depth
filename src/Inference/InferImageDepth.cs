@@ -25,9 +25,12 @@ public class InferImageDepth {
         }
     }
 
-    public float[]? GetData()
-    {
-        return (float[]?)_output?.Clone();
+    public float[]? GetData() {
+        return _output;
+    }
+
+    public float[]? GetDataNormalised() {
+        return _output != null ? NormaliseOutput(_output) : null;
     }
     
     void SetDimensions(int x, int y) {

@@ -1,5 +1,6 @@
 using System.Globalization;
 using Godot;
+using Godot.Collections;
 using GodotOnReady.Attributes;
 
 namespace GodotMidasDepth.Nodes; 
@@ -13,6 +14,8 @@ public partial class PreviewPanel : PanelContainer
     [OnReadyGet("%Preview3DSpatial")] SpatialPreview _spatialPreviewScene = default!;
     [OnReadyGet("%SelectedPathLabel")] Label _pathLabel = default!;
     [OnReadyGet("%PointCloudPreview")] PreviewPointCloud _pointCloud = default!;
+    [OnReadyGet("%TabContainer")] TabContainer _tabContainer = default!;
+    
     
     Image? _image;
     Image? _depth;
@@ -22,16 +25,46 @@ public partial class PreviewPanel : PanelContainer
     
     [Signal]
     public delegate void ProcessDepthRequested(Image image);
+    
+    static PackedScene _xrRootScene = GD.Load<PackedScene>("res://src/Nodes/XrRoot.tscn");
+    enum XrTargetScene {PointCloud, DepthMap}
+    XrRoot? _xrRoot;
 
     [OnReady]
     void ConnectSignals() {
         _loadImageButton.Connect("pressed", this, nameof(OnLoadImagePressed));
         _processDepthButton.Connect("pressed", this, nameof(EmitProcessDepthRequest));
+        _pointCloud.Connect(nameof(PreviewPointCloud.XrToggled), this, nameof(OnXrToggled), new Array() {XrTargetScene.PointCloud});
+        _tabContainer.Connect("tab_changed", this, nameof(OnTabChanged));
     }
 
-    [OnReady]
-    void ResetTextures() {
-        
+    void OnTabChanged(int tab) {
+        if (tab == 2) {
+            _pointCloud.SetMultiMeshTransforms();
+        }
+    }
+
+    void OnXrToggled(bool enabled, XrTargetScene targetScene) {
+        if (enabled && _xrRoot == null) {
+            _xrRoot = _xrRootScene.Instance<XrRoot>();
+            AddChild(_xrRoot);
+        }
+        else if (enabled && (_xrRoot != null && !_xrRoot.IsInsideTree())) {
+            AddChild(_xrRoot);
+        }
+        else if (!enabled && (_xrRoot != null && _xrRoot.IsInsideTree())) {
+            RemoveChild(_xrRoot);
+        }
+
+        if (_xrRoot != null && _xrRoot.IsInsideTree()) {
+            switch (targetScene) {
+                case XrTargetScene.PointCloud:
+                    _xrRoot.SetViewport(_pointCloud.GetParent<Viewport>());
+                    break;
+                case XrTargetScene.DepthMap:
+                    break;
+            }
+        }
     }
 
     void OnLoadImagePressed() {
