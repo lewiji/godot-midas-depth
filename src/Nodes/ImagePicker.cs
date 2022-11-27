@@ -3,10 +3,12 @@ using GodotOnReady.Attributes;
 
 namespace GodotMidasDepth.Nodes; 
 
-public partial class ImagePicker : MarginContainer {
+public partial class ImagePicker : Control {
     [OnReadyGet("%FileDialog")] FileDialog _fileDialog = default!;
     [OnReadyGet("%PreviewTexture")] TextureRect _previewTextureRect = default!;
     [OnReadyGet("%CanvasLayer")] CanvasLayer _canvasLayer = default!;
+    [OnReadyGet("%BackgroundContainer")] Control _bg = default!;
+    
     Tree? _fileTree;
     LineEdit? _fileDirectoryLineEdit;
     
@@ -24,12 +26,19 @@ public partial class ImagePicker : MarginContainer {
             InitialPath = lastPath;
         }
         _fileDialog.Connect("file_selected", this, nameof(OnFileSelected));
-        _fileDialog.Connect("popup_hide", this, nameof(OnFileDialogClosed));
-        var vbox = _fileDialog.GetVbox();
-        _fileTree = vbox.GetChild(2).GetChild(0) as Tree;
-        _fileDirectoryLineEdit = (LineEdit) _fileDialog.GetVbox().GetChild(0).GetChild(3);
-        _fileTree?.Connect("item_selected", this, nameof(OnTreeItemSelected));
+        _fileDialog.Connect("popup_hide", this, nameof(ResetVisibility));
+        
+        GetInternalComponentsFromFileDialog();
+        ResetVisibility();
     }
+
+    void GetInternalComponentsFromFileDialog() {
+	    var vbox = _fileDialog.GetVbox();
+	    _fileTree = vbox.GetChild(2).GetChild(0) as Tree;
+	    _fileDirectoryLineEdit = (LineEdit) _fileDialog.GetVbox().GetChild(0).GetChild(3);
+	    _fileTree?.Connect("item_selected", this, nameof(OnTreeItemSelected));
+    }
+
 
     void OnTreeItemSelected() {
 	    if (_fileTree == null) return;
@@ -44,14 +53,15 @@ public partial class ImagePicker : MarginContainer {
 
 		    if (image.Load(filePath) == Error.Ok) {
 			    var tex = new ImageTexture();
-			    tex.CreateFromImage(image);
+			    tex.CreateFromImage(image, (uint)Texture.FlagsEnum.Filter | (uint)Texture.FlagsEnum.Mipmaps | (uint)Texture.FlagsEnum.AnisotropicFilter);
 			    _previewTextureRect.Texture = tex;
 		    }
 	    }
     }
 
-    void OnFileDialogClosed() {
+    void ResetVisibility() {
 	    _canvasLayer.Visible = false;
+	    _bg.Visible = false;
     }
 
     public void Open() {
@@ -60,6 +70,7 @@ public partial class ImagePicker : MarginContainer {
         }
         _fileDialog.Popup_();
         _canvasLayer.Visible = true;
+        _bg.Visible = true;
     }
 
     void OnFileSelected(string path) {

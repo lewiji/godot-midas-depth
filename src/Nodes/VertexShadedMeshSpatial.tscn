@@ -1,35 +1,8 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://3d_preview_env.tres" type="Environment" id=1]
 [ext_resource path="res://src/Nodes/VertexShadedMeshSpatial.cs" type="Script" id=2]
-
-[sub_resource type="Shader" id=2]
-code = "shader_type spatial;
-
-uniform sampler2D albedo_texture : hint_albedo;
-uniform sampler2D depth_texture : hint_white;
-uniform float depth_scale = 1.0;
-
-void vertex() {
-	float depth = texture(depth_texture, UV).r;
-	VERTEX.y += depth * depth_scale;
-}
-
-void fragment() {
-	vec4 albedo = texture(albedo_texture, UV);
-	ALBEDO = albedo.rgb;
-}
-"
-
-[sub_resource type="ShaderMaterial" id=3]
-shader = SubResource( 2 )
-shader_param/depth_scale = 1.0
-
-[sub_resource type="PlaneMesh" id=1]
-material = SubResource( 3 )
-size = Vector2( 16, 16 )
-subdivide_width = 256
-subdivide_depth = 256
+[ext_resource path="res://src/Nodes/VertexShadedMesh.tres" type="PlaneMesh" id=3]
 
 [node name="VertexShadedMeshSpatial" type="Spatial"]
 unique_name_in_owner = true
@@ -39,7 +12,21 @@ script = ExtResource( 2 )
 environment = ExtResource( 1 )
 
 [node name="DirectionalLight" type="DirectionalLight" parent="."]
-transform = Transform( 0.982281, -0.17391, -0.0698491, 0.182186, 0.798673, 0.573524, -0.043955, -0.576087, 0.816206, 0, 3.87621, 3.65183 )
+transform = Transform( 0.909217, 0.00659759, -0.41627, -0.0125288, 0.999855, -0.0115185, 0.416133, 0.0156882, 0.909168, 0, 15.6531, 3.65183 )
+light_energy = 0.8
+shadow_enabled = true
+shadow_color = Color( 0.64, 0.64, 0.64, 1 )
+shadow_bias = 0.02
+directional_shadow_split_1 = 0.081
+directional_shadow_split_2 = 0.162
+directional_shadow_split_3 = 0.324
+directional_shadow_normal_bias = 0.162
+directional_shadow_bias_split_scale = 0.162
+directional_shadow_depth_range = 1
+directional_shadow_max_distance = 50.0
+__meta__ = {
+"_editor_description_": ""
+}
 
 [node name="Camera" type="Camera" parent="."]
 unique_name_in_owner = true
@@ -52,7 +39,7 @@ unique_name_in_owner = true
 [node name="MeshInstance" type="MeshInstance" parent="MeshGimbal"]
 unique_name_in_owner = true
 transform = Transform( 1, 0, 0, 0, 0.258819, -0.965926, 0, 0.965926, 0.258819, 0, 0, 0 )
-mesh = SubResource( 1 )
+mesh = ExtResource( 3 )
 skeleton = NodePath("../..")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -92,11 +79,11 @@ margin_right = 193.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 150, 0 )
 size_flags_vertical = 4
-min_value = -0.01
-max_value = 0.01
-step = 1e-05
-value = 1e-05
-tick_count = 20
+min_value = -10.0
+max_value = 10.0
+step = 0.01
+value = 1.0
+tick_count = 10
 
 [node name="DepthEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true

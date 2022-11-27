@@ -1,0 +1,10 @@
+[gd_resource type="PlaneMesh" load_steps=2 format=2]
+
+[ext_resource path="res://src/Nodes/VertexShadedMeshMaterial.tres" type="Material" id=1]
+
+[resource]
+resource_local_to_scene = true
+material = ExtResource( 1 )
+size = Vector2( 16, 16 )
+subdivide_width = 512
+subdivide_depth = 512

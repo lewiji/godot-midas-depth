@@ -80,7 +80,7 @@ public partial class PreviewPanel : PanelContainer
         _image = image;
         var tex = new ImageTexture();
         tex.Flags = (uint)Texture.FlagsEnum.Filter | (uint)Texture.FlagsEnum.Mipmaps | (uint)Texture.FlagsEnum.AnisotropicFilter;
-        tex.CreateFromImage(image);
+        tex.CreateFromImage(image, (uint)Texture.FlagsEnum.Filter | (uint)Texture.FlagsEnum.Mipmaps | (uint)Texture.FlagsEnum.AnisotropicFilter);
         _previewTextureRect.Texture = tex;
     }
 
@@ -91,11 +91,15 @@ public partial class PreviewPanel : PanelContainer
     public void SetResultImage(Image image) {
         _depth = image;
         var tex = new ImageTexture();
-        tex.Flags = (uint)Texture.FlagsEnum.Filter | (uint)Texture.FlagsEnum.Mipmaps | (uint)Texture.FlagsEnum.AnisotropicFilter;
-        tex.CreateFromImage(image);
+        tex.CreateFromImage(image, (uint)Texture.FlagsEnum.Filter);
         _outputTextureRect.Texture = tex;
         ResourceSaver.Save("user://input_tmp.png", tex);
         ResourceSaver.Save("user://output_tmp.png", _previewTextureRect.Texture);
+        
+        /*#if TOOLS
+		    ResourceSaver.Save("res://tmp/input_tmp.png", tex);
+		    ResourceSaver.Save("res://tmp/output_tmp.png", _previewTextureRect.Texture);
+	    #endif*/
     }
 
     public void SetSprite3dImage() {
@@ -113,7 +117,8 @@ public partial class PreviewPanel : PanelContainer
     public void CreateVertexShadedMesh(Image outputImage) {
 	    if (_image != null) {
 		    ImageTexture tex = new ImageTexture();
-		    tex.CreateFromImage(outputImage);
+		    tex.Flags = (uint)Texture.FlagsEnum.Filter;
+		    tex.CreateFromImage(outputImage, (uint)Texture.FlagsEnum.Filter);
 		    _vertexShadedMesh.SetTextures(_previewTextureRect.Texture, tex);
 	    }
     }

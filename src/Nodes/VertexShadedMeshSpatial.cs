@@ -30,6 +30,7 @@ public partial class VertexShadedMeshSpatial : Spatial {
 	public void SetTextures(Texture albedo, Texture depth) {
 		_shaderMaterial?.SetShaderParam("albedo_texture", albedo);
 		_shaderMaterial?.SetShaderParam("depth_texture", depth);
+		((PlaneMesh) _meshInstance.Mesh).Size = albedo.GetSize() * 0.01f;
 	}
 
 	public override void _Process(float delta) {

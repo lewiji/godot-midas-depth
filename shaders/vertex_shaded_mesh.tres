@@ -1,0 +1,23 @@
+[gd_resource type="Shader" format=2]
+
+[resource]
+code = "shader_type spatial;
+
+uniform sampler2D albedo_texture : hint_albedo;
+uniform sampler2D depth_texture : hint_white;
+uniform float depth_scale = 2.0;
+uniform float depth_min = -10.0;
+uniform float depth_max = 10.0;
+
+void vertex() {
+	float depth = texture(depth_texture, clamp(UV, vec2(0.001, 0.005), vec2(0.99, 0.996))).r;
+	VERTEX.y += depth * clamp(depth_scale, depth_min, depth_max);
+}
+
+void fragment() {
+	int lod = int(clamp(round(abs(WORLD_MATRIX[3].xyz - CAMERA_MATRIX[3].xyz).z / depth_max * 1.618), 0.0, 5.0));
+	vec2 xy = UV * vec2(textureSize(albedo_texture, int(lod)));
+	vec4 albedo = texelFetch(albedo_texture, ivec2(xy), int(lod));
+	ALBEDO = albedo.rgb;
+}
+"
