@@ -17,15 +17,12 @@ public partial class PreviewPanel : PanelContainer
     [OnReadyGet("%Toolbar/%DepthSlider")] Slider _depthSlider = default!;
 	[OnReadyGet("%Toolbar/%DepthSpinBox")] SpinBox _depthSpinBox = default!;
     
-    
     Image? _image;
     Image? _depth;
 
     [Signal]
     public delegate void LoadImageRequested();
     
-    [Signal]
-    public delegate void ProcessDepthRequested(Image image);
     
     static PackedScene _xrRootScene = GD.Load<PackedScene>("res://src/Nodes/XrRoot.tscn");
     enum XrTargetScene {PointCloud, DepthMap}
@@ -38,6 +35,15 @@ public partial class PreviewPanel : PanelContainer
         _depthSlider.Connect("value_changed", this, nameof(OnDepthChanged));
         _depthSpinBox.Connect("value_changed", this, nameof(OnDepthSpinBoxChanged));
         OnDepthChanged((float)_depthSlider.Value);
+    }
+
+    public override void _Process(float delta) {
+	    if (Input.IsActionPressed("depth_increase")) {
+		    _depthSlider.Value += _depthSlider.Step / delta;
+	    }
+	    if (Input.IsActionPressed("depth_decrease")) {
+		    _depthSlider.Value -= _depthSlider.Step / delta;
+	    }
     }
 
     void OnDepthChanged(float value) {
@@ -77,10 +83,6 @@ public partial class PreviewPanel : PanelContainer
 
     void OnLoadImagePressed() {
         EmitSignal(nameof(LoadImageRequested));
-    }
-    
-    void EmitProcessDepthRequest() {
-        EmitSignal(nameof(ProcessDepthRequested), _image);
     }
 
     public void SetPreviewImage(Image image) {

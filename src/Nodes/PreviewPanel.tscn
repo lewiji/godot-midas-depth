@@ -32,7 +32,7 @@ tab_align = 0
 [node name="Preview2d" parent="VBoxContainer/TabContainer" instance=ExtResource( 4 )]
 unique_name_in_owner = true
 margin_left = 0.0
-margin_top = 15.0
+margin_top = 16.0
 margin_right = 0.0
 margin_bottom = 0.0
 

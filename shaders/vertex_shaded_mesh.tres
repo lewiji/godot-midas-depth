@@ -3,7 +3,7 @@
 [resource]
 code = "shader_type spatial;
 
-render_mode diffuse_lambert, blend_mix, depth_draw_opaque, specular_schlick_ggx, ambient_light_disabled;
+render_mode diffuse_lambert, blend_mix, depth_draw_opaque, specular_schlick_ggx, ambient_light_disabled, cull_disabled;
 
 uniform sampler2D albedo_texture : hint_albedo;
 uniform sampler2D depth_texture : hint_white;
@@ -17,7 +17,7 @@ void vertex() {
 }
 
 void fragment() {
-	int lod = int(clamp(round(abs(WORLD_MATRIX[3].xyz - CAMERA_MATRIX[3].xyz).z / depth_max * 1.618), 0.0, 5.0));
+	int lod = int(clamp(round(abs(WORLD_MATRIX[3].xyz - CAMERA_MATRIX[3].xyz).z / depth_max / 2.0), 0.0, 3.0));
 	vec2 xy = UV * vec2(textureSize(albedo_texture, int(lod)));
 	vec4 albedo = texelFetch(albedo_texture, ivec2(xy), int(lod));
 	ALBEDO = albedo.rgb;

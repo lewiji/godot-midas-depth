@@ -45,9 +45,9 @@ margin_bottom = 24.0
 
 [node name="Label" type="Label" parent="HBoxContainer"]
 margin_left = 67.0
-margin_top = 6.0
+margin_top = 5.0
 margin_right = 106.0
-margin_bottom = 17.0
+margin_bottom = 19.0
 text = "Depth"
 
 [node name="DepthSlider" type="HSlider" parent="HBoxContainer"]
@@ -58,10 +58,10 @@ margin_right = 233.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 120, 0 )
 size_flags_vertical = 4
-min_value = -10.0
-max_value = 10.0
+min_value = -5.0
+max_value = 5.0
 step = 0.001
-value = 2.0
+value = 1.618
 tick_count = 10
 
 [node name="DepthSpinBox" type="SpinBox" parent="HBoxContainer"]
@@ -70,10 +70,10 @@ margin_left = 240.0
 margin_right = 314.0
 margin_bottom = 24.0
 mouse_filter = 1
-min_value = -10.0
-max_value = 10.0
+min_value = -5.0
+max_value = 5.0
 step = 0.001
-value = 2.0
+value = 1.618
 align = 3
 
 [node name="VSeparator5" type="VSeparator" parent="HBoxContainer"]
@@ -85,9 +85,9 @@ mouse_filter = 1
 [node name="SelectedPathLabel" type="Label" parent="HBoxContainer"]
 unique_name_in_owner = true
 margin_left = 329.0
-margin_top = 6.0
+margin_top = 5.0
 margin_right = 935.0
-margin_bottom = 17.0
+margin_bottom = 19.0
 size_flags_horizontal = 3
 align = 2
 clip_text = true
