@@ -1,5 +1,6 @@
 using Godot;
 using GodotMidasDepth.Inference;
+using GodotMidasDepth.Math;
 using GodotMidasDepth.Nodes;
 using GodotOnReady.Attributes;
 
@@ -43,6 +44,12 @@ public partial class Main : Node {
         if (_inferImageDepth?.GetDataNormalised() is { } depthData)
         {
             _previewPanel.CreatePointCloud(depthData);
+            
+            var bytes = depthData.ToByteArray();
+            var outputImage = new Image();
+            outputImage.CreateFromData(256, 256, false, Image.Format.Rf, bytes);
+            //outputImage.Resize((int)inputSize.x, (int)inputSize.y, Image.Interpolation.Cubic);
+            _previewPanel.CreateVertexShadedMesh(outputImage);
         }
     }
 }

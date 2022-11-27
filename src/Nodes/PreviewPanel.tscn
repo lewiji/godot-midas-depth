@@ -1,20 +1,11 @@
 [gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://src/Nodes/PreviewPanel.cs" type="Script" id=1]
-[ext_resource path="res://src/Nodes/Preview3DSpatial.tscn" type="PackedScene" id=2]
-[ext_resource path="res://src/Nodes/PreviewPointCloud.tscn" type="PackedScene" id=3]
-[ext_resource path="res://shaders/depth_preview.gdshader" type="Shader" id=4]
-
-[sub_resource type="ShaderMaterial" id=3]
-shader = ExtResource( 4 )
-shader_param/base_color = Vector3( 1, 1, 1 )
-
-[sub_resource type="StyleBoxFlat" id=1]
-content_margin_left = 5.0
-content_margin_right = 5.0
-content_margin_top = 5.0
-content_margin_bottom = 5.0
-bg_color = Color( 0, 0, 0, 0.145098 )
+[ext_resource path="res://src/Nodes/Toolbar.tscn" type="PackedScene" id=2]
+[ext_resource path="res://src/Nodes/PointCloud3d.tscn" type="PackedScene" id=3]
+[ext_resource path="res://src/Nodes/Preview2d.tscn" type="PackedScene" id=4]
+[ext_resource path="res://src/Nodes/Preview3d.tscn" type="PackedScene" id=5]
+[ext_resource path="res://src/Nodes/VertexShadedMesh.tscn" type="PackedScene" id=6]
 
 [node name="PreviewPanel" type="PanelContainer"]
 unique_name_in_owner = true
@@ -37,193 +28,21 @@ margin_bottom = 552.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Preview2d" type="MarginContainer" parent="VBoxContainer/TabContainer"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 32.0
-margin_right = -4.0
-margin_bottom = -4.0
-custom_constants/margin_right = 3
-custom_constants/margin_top = 3
-custom_constants/margin_left = 3
-custom_constants/margin_bottom = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/TabContainer/Preview2d"]
-margin_left = 3.0
-margin_top = 3.0
-margin_right = 999.0
-margin_bottom = 513.0
-custom_constants/separation = 7
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/TabContainer/Preview2d/VBoxContainer"]
-margin_right = 996.0
-margin_bottom = 510.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-custom_constants/separation = 6
-
-[node name="PreviewPanel" type="Panel" parent="VBoxContainer/TabContainer/Preview2d/VBoxContainer/HBoxContainer2"]
-margin_right = 495.0
-margin_bottom = 510.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/TabContainer/Preview2d/VBoxContainer/HBoxContainer2/PreviewPanel"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-custom_constants/margin_right = 8
-custom_constants/margin_top = 8
-custom_constants/margin_left = 8
-custom_constants/margin_bottom = 8
-
-[node name="PreviewTextureRect" type="TextureRect" parent="VBoxContainer/TabContainer/Preview2d/VBoxContainer/HBoxContainer2/PreviewPanel/MarginContainer"]
+[node name="Preview2d" parent="VBoxContainer/TabContainer" instance=ExtResource( 4 )]
 unique_name_in_owner = true
-margin_left = 8.0
-margin_top = 8.0
-margin_right = 487.0
-margin_bottom = 502.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-expand = true
-stretch_mode = 6
 
-[node name="ResultPanel" type="Panel" parent="VBoxContainer/TabContainer/Preview2d/VBoxContainer/HBoxContainer2"]
-margin_left = 501.0
-margin_right = 996.0
-margin_bottom = 510.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/TabContainer/Preview2d/VBoxContainer/HBoxContainer2/ResultPanel"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-custom_constants/margin_right = 8
-custom_constants/margin_top = 8
-custom_constants/margin_left = 8
-custom_constants/margin_bottom = 8
-
-[node name="OutputTextureRect" type="TextureRect" parent="VBoxContainer/TabContainer/Preview2d/VBoxContainer/HBoxContainer2/ResultPanel/MarginContainer"]
+[node name="Preview3d" parent="VBoxContainer/TabContainer" instance=ExtResource( 5 )]
 unique_name_in_owner = true
-material = SubResource( 3 )
-margin_left = 8.0
-margin_top = 8.0
-margin_right = 487.0
-margin_bottom = 502.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-expand = true
-stretch_mode = 6
+margin_top = 24.0
 
-[node name="Preview3d" type="MarginContainer" parent="VBoxContainer/TabContainer"]
+[node name="PointCloud3d" parent="VBoxContainer/TabContainer" instance=ExtResource( 3 )]
+unique_name_in_owner = true
+margin_top = 24.0
+
+[node name="VertexShadedMesh" parent="VBoxContainer/TabContainer" instance=ExtResource( 6 )]
+unique_name_in_owner = true
 visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 32.0
-margin_right = -4.0
-margin_bottom = -4.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
+margin_top = 24.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/TabContainer/Preview3d"]
-margin_right = 1002.0
-margin_bottom = 516.0
-
-[node name="ViewportContainer" type="ViewportContainer" parent="VBoxContainer/TabContainer/Preview3d/VBoxContainer"]
-margin_right = 1002.0
-margin_bottom = 512.0
-mouse_filter = 1
-size_flags_horizontal = 3
-size_flags_vertical = 3
-stretch = true
-
-[node name="Viewport" type="Viewport" parent="VBoxContainer/TabContainer/Preview3d/VBoxContainer/ViewportContainer"]
-size = Vector2( 1002, 512 )
-own_world = true
-handle_input_locally = false
-render_target_update_mode = 0
-physics_object_picking = true
-shadow_atlas_size = 2048
-
-[node name="Preview3DSpatial" parent="VBoxContainer/TabContainer/Preview3d/VBoxContainer/ViewportContainer/Viewport" instance=ExtResource( 2 )]
+[node name="Toolbar" parent="VBoxContainer" instance=ExtResource( 2 )]
 unique_name_in_owner = true
-
-[node name="PointCloud3d" type="MarginContainer" parent="VBoxContainer/TabContainer"]
-visible = false
-margin_right = 40.0
-margin_bottom = 40.0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/TabContainer/PointCloud3d"]
-margin_right = 40.0
-margin_bottom = 40.0
-
-[node name="ViewportContainer" type="ViewportContainer" parent="VBoxContainer/TabContainer/PointCloud3d/VBoxContainer"]
-margin_right = 1002.0
-margin_bottom = 512.0
-mouse_filter = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-stretch = true
-
-[node name="Viewport" type="Viewport" parent="VBoxContainer/TabContainer/PointCloud3d/VBoxContainer/ViewportContainer"]
-size = Vector2( 1002, 512 )
-own_world = true
-handle_input_locally = false
-render_target_update_mode = 0
-physics_object_picking = true
-shadow_atlas_size = 2048
-
-[node name="PointCloudPreview" parent="VBoxContainer/TabContainer/PointCloud3d/VBoxContainer/ViewportContainer/Viewport" instance=ExtResource( 3 )]
-unique_name_in_owner = true
-
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
-margin_top = 556.0
-margin_right = 1010.0
-margin_bottom = 586.0
-custom_styles/panel = SubResource( 1 )
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer"]
-margin_left = 5.0
-margin_top = 5.0
-margin_right = 1005.0
-margin_bottom = 25.0
-custom_constants/separation = 8
-alignment = 2
-
-[node name="SelectedPathLabel" type="Label" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-unique_name_in_owner = true
-margin_top = 3.0
-margin_right = 769.0
-margin_bottom = 17.0
-size_flags_horizontal = 3
-align = 2
-clip_text = true
-
-[node name="VSeparator2" type="VSeparator" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-margin_left = 777.0
-margin_right = 781.0
-margin_bottom = 20.0
-
-[node name="LoadImageButton" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-unique_name_in_owner = true
-margin_left = 789.0
-margin_right = 875.0
-margin_bottom = 20.0
-text = "Load Image"
-
-[node name="VSeparator" type="VSeparator" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-margin_left = 883.0
-margin_right = 887.0
-margin_bottom = 20.0
-
-[node name="ProcessDepthButton" type="Button" parent="VBoxContainer/PanelContainer/HBoxContainer"]
-unique_name_in_owner = true
-margin_left = 895.0
-margin_right = 1000.0
-margin_bottom = 20.0
-text = "Process Depth"
