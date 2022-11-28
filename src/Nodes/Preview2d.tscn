@@ -1,10 +1,6 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://shaders/depth_preview.gdshader" type="Shader" id=1]
-
-[sub_resource type="ShaderMaterial" id=3]
-shader = ExtResource( 1 )
-shader_param/base_color = Vector3( 1, 1, 1 )
+[ext_resource path="res://src/Nodes/OutputTextureRectRMaterial.tres" type="Material" id=1]
 
 [node name="Preview2d" type="MarginContainer"]
 anchor_right = 1.0
@@ -21,20 +17,20 @@ custom_constants/margin_bottom = 3
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 margin_left = 3.0
 margin_top = 3.0
-margin_right = 999.0
-margin_bottom = 513.0
+margin_right = 1909.0
+margin_bottom = 1041.0
 custom_constants/separation = 7
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
-margin_right = 996.0
-margin_bottom = 510.0
+margin_right = 1906.0
+margin_bottom = 1038.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 6
 
 [node name="PreviewPanel" type="Panel" parent="VBoxContainer/HBoxContainer2"]
-margin_right = 495.0
-margin_bottom = 510.0
+margin_right = 950.0
+margin_bottom = 1038.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -52,17 +48,17 @@ custom_constants/margin_bottom = 8
 unique_name_in_owner = true
 margin_left = 8.0
 margin_top = 8.0
-margin_right = 487.0
-margin_bottom = 502.0
+margin_right = 942.0
+margin_bottom = 1030.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 expand = true
 stretch_mode = 6
 
 [node name="ResultPanel" type="Panel" parent="VBoxContainer/HBoxContainer2"]
-margin_left = 501.0
-margin_right = 996.0
-margin_bottom = 510.0
+margin_left = 956.0
+margin_right = 1906.0
+margin_bottom = 1038.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -76,13 +72,17 @@ custom_constants/margin_top = 8
 custom_constants/margin_left = 8
 custom_constants/margin_bottom = 8
 
-[node name="OutputTextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer2/ResultPanel/MarginContainer"]
-unique_name_in_owner = true
-material = SubResource( 3 )
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/HBoxContainer2/ResultPanel/MarginContainer"]
 margin_left = 8.0
 margin_top = 8.0
-margin_right = 487.0
-margin_bottom = 502.0
+margin_right = 942.0
+margin_bottom = 1030.0
+
+[node name="OutputTextureRectR" type="TextureRect" parent="VBoxContainer/HBoxContainer2/ResultPanel/MarginContainer/GridContainer"]
+unique_name_in_owner = true
+material = ExtResource( 1 )
+margin_right = 934.0
+margin_bottom = 1022.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 expand = true

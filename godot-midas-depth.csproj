@@ -1,6 +1,6 @@
 <Project Sdk="Godot.NET.Sdk/3.3.0">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <RootNamespace>GodotMidasDepth</RootNamespace>
     <LangVersion>10</LangVersion>
     <Nullable>enable</Nullable>
@@ -8,6 +8,9 @@
     <Platforms>AnyCPU;x86;x64</Platforms>
     <PlatformTarget>x64</PlatformTarget>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <RuntimeIdentifiers>linux-x64;win-x64;osx-x64</RuntimeIdentifiers>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="GodotOnReady" Version="1.2.3" />
@@ -15,5 +18,17 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="assets\weights\MiDaS_model-small.onnx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".mono\temp\bin\Debug\libLibTorchSharp.so" />
+    <Content Include=".mono\temp\bin\Debug\libtorch.so" />
+    <Content Include=".mono\temp\bin\Debug\libtorch_cpu.so" />
+    <Content Include="assets\convert_pt_to_onnx.py" />
+    <Content Include="assets\extract_model_weights.py" />
+    <Content Include="assets\torch_to_torchsharp.py" />
+    <Content Include="assets\weights\hybrid_model_weights.dat" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".mono\temp\obj\Debug\godot-midas-depth.dll.config" />
   </ItemGroup>
 </Project>

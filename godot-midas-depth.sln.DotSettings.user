@@ -5,6 +5,9 @@
   &lt;Assembly Path="/home/lewiji/RiderProjects/godot-midas-depth/.mono/temp/bin/Debug/onnxruntime.dll" /&gt;
   &lt;Assembly Path="/home/lewiji/.nuget/packages/microsoft.ml.onnxruntime.managed/1.13.1/lib/netstandard2.0/Microsoft.ML.OnnxRuntime.dll" /&gt;
   &lt;Assembly Path="/home/lewiji/RiderProjects/godot-midas-depth/.mono/temp/bin/Debug/onnxruntime_providers_shared.dll" /&gt;
+  &lt;PhysicalFolder Path="/home/lewiji/.nuget/packages/libtorch-cpu-linux-x64/1.13.0.1" Loaded="True" /&gt;
+  &lt;PhysicalFolder Path="/home/lewiji/.nuget/packages/torchsharp-cpu/0.99.0" Loaded="True" /&gt;
+  &lt;Assembly Path="/home/lewiji/.nuget/packages/torchsharp/0.99.0/lib/netstandard2.0/TorchSharp.dll" /&gt;
 &lt;/AssemblyExplorer&gt;</s:String>
 	
 	

@@ -8,7 +8,7 @@ namespace GodotMidasDepth.Nodes;
 public partial class PreviewPanel : PanelContainer
 {
     [OnReadyGet("%Preview2d/%PreviewTextureRect")] TextureRect _previewTextureRect = default!;
-    [OnReadyGet("%Preview2d/%OutputTextureRect")] TextureRect _outputTextureRect = default!;
+    [OnReadyGet("%Preview2d/%OutputTextureRectR")] TextureRect _outputTextureRectR = default!;
     [OnReadyGet("%Toolbar/%LoadImageButton")] Button _loadImageButton = default!;
     [OnReadyGet("%Toolbar/%SelectedPathLabel")] Label _pathLabel = default!;
     [OnReadyGet("%VertexShadedMesh/%VertexShadedMeshSpatial")] VertexShadedMeshSpatial _vertexShadedMesh = default!;
@@ -23,9 +23,7 @@ public partial class PreviewPanel : PanelContainer
     [Signal]
     public delegate void LoadImageRequested();
     
-    
     static PackedScene _xrRootScene = GD.Load<PackedScene>("res://src/Nodes/XrRoot.tscn");
-    enum XrTargetScene {PointCloud, DepthMap}
     XrRoot? _xrRoot;
 
     [OnReady]
@@ -101,7 +99,7 @@ public partial class PreviewPanel : PanelContainer
         _depth = image;
         var tex = new ImageTexture();
         tex.CreateFromImage(image, (uint)Texture.FlagsEnum.Filter);
-        _outputTextureRect.Texture = tex;
+        _outputTextureRectR.Texture = tex;
         ResourceSaver.Save("user://input_tmp.png", tex);
         ResourceSaver.Save("user://output_tmp.png", _previewTextureRect.Texture);
     }
@@ -109,7 +107,7 @@ public partial class PreviewPanel : PanelContainer
     public void CreateVertexShadedMesh(Image outputImage) {
 	    if (_image != null) {
 		    ImageTexture tex = new ImageTexture();
-		    outputImage.Resize(_image.GetWidth(), _image.GetHeight(), Image.Interpolation.Cubic);
+		    outputImage.Resize(_image.GetWidth(), _image.GetHeight(), Image.Interpolation.Lanczos);
 		    tex.CreateFromImage(outputImage, (uint)Texture.FlagsEnum.Filter);
 		    _vertexShadedMesh.SetTextures(_previewTextureRect.Texture, tex);
 	    }

@@ -8,7 +8,7 @@ using Microsoft.ML.OnnxRuntime.Tensors;
 
 namespace GodotMidasDepth.Inference; 
 
-public class InferImageDepth {
+public class InferImageDepth : IInferImageDepth {
     readonly Image _input = new();
     float[]? _output;
     int _width = 256, _height = 256;
@@ -16,13 +16,17 @@ public class InferImageDepth {
     public const string DefaultModelPath = "assets/weights/MiDaS_model-small.onnx";
     string _modelPath = DefaultModelPath;
 
-    public void LoadModel(string? path = null) {
-        if (path != null) _modelPath = path;
+    public void LoadModel(string path) {
+        _modelPath = path;
         _session = new InferenceSession(_modelPath);
         GD.Print($"Model loaded. Version: {_session.ModelMetadata.Version}");
         if (_modelPath == DefaultModelPath) {
             SetDimensions(_session.InputMetadata["0"].Dimensions[2], _session.InputMetadata["0"].Dimensions[3]);
         }
+    }
+
+    public void LoadModel() {
+	    LoadModel(DefaultModelPath);
     }
 
     public float[]? GetData() {

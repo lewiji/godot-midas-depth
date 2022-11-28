@@ -12,11 +12,14 @@ public partial class Main : Node {
 
     public static readonly Config Config = new Config();
     InferImageDepth? _inferImageDepth;
+    InferImageDepthOptionalModels? _inferHybridLarge;
     
     [OnReady]
     void LoadInferenceModel() {
         _inferImageDepth = new InferImageDepth();
-        _inferImageDepth.LoadModel();
+        _inferImageDepth.LoadModel("assets/weights/hybrid_module.dat");
+        //_inferHybridLarge = new InferImageDepthOptionalModels();
+        //_inferHybridLarge.LoadModel();
     }
 
     [OnReady]
