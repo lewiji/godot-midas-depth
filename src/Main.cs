@@ -17,7 +17,7 @@ public partial class Main : Node {
     [OnReady]
     void LoadInferenceModel() {
         _inferImageDepth = new InferImageDepth();
-        _inferImageDepth.LoadModel("assets/weights/hybrid_module.dat");
+        _inferImageDepth.LoadModel();
         //_inferHybridLarge = new InferImageDepthOptionalModels();
         //_inferHybridLarge.LoadModel();
     }
