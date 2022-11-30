@@ -1,84 +1,88 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://cc0uael6hbkuu"]
 
-[ext_resource path="res://src/Nodes/ImagePicker.cs" type="Script" id=1]
+[ext_resource type="Script" path="res://src/Nodes/ImagePicker.cs" id="1"]
 
-[node name="ImagePicker" type="Control"]
+[node name="ImagePicker" type="Control" node_paths=PackedStringArray("FileDialog", "PreviewTextureRect", "CanvasLayer", "Bg")]
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource( 1 )
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+FileDialog = NodePath("DialogContainer/CanvasLayer/FileDialog")
+PreviewTextureRect = NodePath("DialogContainer/CanvasLayer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer/PreviewTexture")
+CanvasLayer = NodePath("DialogContainer/CanvasLayer")
+Bg = NodePath("CanvasLayer/BackgroundContainer")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = 10
 
 [node name="BackgroundContainer" type="MarginContainer" parent="CanvasLayer"]
 unique_name_in_owner = true
+visible = false
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="ColorRect" type="ColorRect" parent="CanvasLayer/BackgroundContainer"]
-margin_right = 1920.0
-margin_bottom = 1080.0
-color = Color( 0, 0, 0, 0.768627 )
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0, 0, 0, 0.768627)
 
 [node name="DialogContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
-custom_constants/margin_right = 272
-custom_constants/margin_top = 64
-custom_constants/margin_left = 64
-custom_constants/margin_bottom = 64
 
 [node name="CanvasLayer" type="CanvasLayer" parent="DialogContainer"]
 unique_name_in_owner = true
 layer = 20
+visible = false
 
 [node name="HBoxContainer" type="HBoxContainer" parent="DialogContainer/CanvasLayer"]
+anchors_preset = -1
 anchor_left = 0.75
 anchor_top = 0.104
 anchor_right = 0.96
 anchor_bottom = 0.897
-margin_left = -18.0
+offset_left = -18.0
 
 [node name="PanelContainer" type="PanelContainer" parent="DialogContainer/CanvasLayer/HBoxContainer"]
-margin_right = 421.0
-margin_bottom = 856.0
+offset_right = 259.0
+offset_bottom = 513.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.25
 
 [node name="MarginContainer" type="MarginContainer" parent="DialogContainer/CanvasLayer/HBoxContainer/PanelContainer"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 414.0
-margin_bottom = 849.0
+offset_right = 259.0
+offset_bottom = 513.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DialogContainer/CanvasLayer/HBoxContainer/PanelContainer/MarginContainer"]
-margin_right = 407.0
-margin_bottom = 842.0
+offset_right = 259.0
+offset_bottom = 513.0
 
 [node name="PreviewTexture" type="TextureRect" parent="DialogContainer/CanvasLayer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_right = 407.0
-margin_bottom = 842.0
+offset_right = 259.0
+offset_bottom = 513.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-expand = true
-stretch_mode = 6
+stretch_mode = 5
 
 [node name="FileDialog" type="FileDialog" parent="DialogContainer/CanvasLayer"]
 unique_name_in_owner = true
-visible = true
-anchor_left = 0.0333333
-anchor_top = 0.106
-anchor_right = 0.742
-anchor_bottom = 0.894
-rect_min_size = Vector2( 150, 52.5 )
-size_flags_horizontal = 3
-size_flags_vertical = 3
-popup_exclusive = true
-window_title = "Open a File"
-mode = 0
+title = "Open a File"
+size = Vector2i(735, 600)
+min_size = Vector2i(600, 500)
+ok_button_text = "Open"
+file_mode = 0
 access = 2
-filters = PoolStringArray( "*.png, *.jpg, *.jpeg ; Supported images" )
+filters = PackedStringArray("*.png, *.jpg, *.jpeg ; Supported images")
 show_hidden_files = true

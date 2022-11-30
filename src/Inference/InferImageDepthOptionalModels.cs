@@ -3,7 +3,7 @@ using Godot;
 
 namespace GodotMidasDepth.Inference; 
 
-public class InferImageDepthOptionalModels : IInferImageDepth {
+public partial class InferImageDepthOptionalModels : IInferImageDepth {
 	public enum ModelSize {Hybrid, Large}
 	static readonly Dictionary<ModelSize, string> ModelPaths = new Dictionary<ModelSize, string> {
 		{ModelSize.Hybrid, "assets/weights/hybrid_module.dat"},
@@ -22,8 +22,7 @@ public class InferImageDepthOptionalModels : IInferImageDepth {
 		_modelPath = ModelPaths[modelSize];
 		_weightsPath = WeightsPaths[modelSize];
 		
-		var file = new File();
-		if (!file.FileExists(_modelPath) || !file.FileExists(_weightsPath)) {
+		if (!FileAccess.FileExists(_modelPath) || !FileAccess.FileExists(_weightsPath)) {
 			GD.PushWarning($"Model {modelSize} couldn't be loaded using torchscript: {_modelPath} and "
 			               + $"weights: {_weightsPath}. Use `extract_model_weights.py`.");
 			return;

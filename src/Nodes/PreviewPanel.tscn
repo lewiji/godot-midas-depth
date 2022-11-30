@@ -1,46 +1,171 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=3 uid="uid://vlhufro8b1km"]
 
-[ext_resource path="res://src/Nodes/PreviewPanel.cs" type="Script" id=1]
-[ext_resource path="res://src/Nodes/Toolbar.tscn" type="PackedScene" id=2]
-[ext_resource path="res://theme_preview_panel.tres" type="Theme" id=3]
-[ext_resource path="res://src/Nodes/Preview2d.tscn" type="PackedScene" id=4]
-[ext_resource path="res://src/Nodes/VertexShadedMesh.tscn" type="PackedScene" id=6]
+[ext_resource type="Script" path="res://src/Nodes/PreviewPanel.cs" id="1"]
+[ext_resource type="PackedScene" uid="uid://b5dinf606x44g" path="res://src/Nodes/Toolbar.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://c87kt557iw4h6" path="res://src/Nodes/Preview2d.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://crh4c2hw03nd2" path="res://src/Nodes/VertexShadedMesh.tscn" id="6"]
 
-[node name="PreviewPanel" type="PanelContainer"]
+[node name="PreviewPanel" type="PanelContainer" node_paths=PackedStringArray("PreviewTextureRect", "OutputTextureRectR", "LoadImageButton", "PathLabel", "VertexShadedMesh", "TabContainer", "XrCheckBox", "DepthSlider", "DepthSpinBox")]
 unique_name_in_owner = true
-margin_right = 1024.0
-margin_bottom = 600.0
+offset_right = 1024.0
+offset_bottom = 600.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme = ExtResource( 3 )
-script = ExtResource( 1 )
+script = ExtResource("1")
+PreviewTextureRect = NodePath("VBoxContainer/TabContainer/Preview2d/VBoxContainer/HBoxContainer2/PreviewPanel/MarginContainer/PreviewTextureRect")
+OutputTextureRectR = NodePath("VBoxContainer/TabContainer/Preview2d/VBoxContainer/HBoxContainer2/ResultPanel/MarginContainer/GridContainer/OutputTextureRectR")
+LoadImageButton = NodePath("VBoxContainer/Toolbar/HBoxContainer/LoadImageButton")
+PathLabel = NodePath("VBoxContainer/Toolbar/HBoxContainer/Label")
+VertexShadedMesh = NodePath("VBoxContainer/TabContainer/VertexShadedMesh/VBoxContainer/SubViewportContainer/SubViewport/VertexShadedMeshSpatial")
+TabContainer = NodePath("VBoxContainer/TabContainer")
+XrCheckBox = NodePath("VBoxContainer/Toolbar/HBoxContainer/XrCheckBox")
+DepthSlider = NodePath("VBoxContainer/Toolbar/HBoxContainer/DepthSlider")
+DepthSpinBox = NodePath("VBoxContainer/Toolbar/HBoxContainer/DepthSpinBox")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 1017.0
-margin_bottom = 593.0
+offset_right = 1024.0
+offset_bottom = 600.0
 
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer"]
 unique_name_in_owner = true
-margin_right = 1010.0
-margin_bottom = 548.0
+offset_right = 1024.0
+offset_bottom = 565.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-tab_align = 0
 
-[node name="Preview2d" parent="VBoxContainer/TabContainer" instance=ExtResource( 4 )]
+[node name="Preview2d" parent="VBoxContainer/TabContainer" instance=ExtResource("4")]
 unique_name_in_owner = true
-margin_left = 0.0
-margin_top = 16.0
-margin_right = 0.0
-margin_bottom = 0.0
+offset_left = 0.0
+offset_top = 31.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="VertexShadedMesh" parent="VBoxContainer/TabContainer" instance=ExtResource( 6 )]
+[node name="VBoxContainer" parent="VBoxContainer/TabContainer/Preview2d" index="0"]
+layout_mode = 3
+offset_right = 1024.0
+offset_bottom = 534.0
+
+[node name="HBoxContainer2" parent="VBoxContainer/TabContainer/Preview2d/VBoxContainer" index="0"]
+layout_mode = 3
+offset_right = 1024.0
+offset_bottom = 534.0
+
+[node name="PreviewPanel" parent="VBoxContainer/TabContainer/Preview2d/VBoxContainer/HBoxContainer2" index="0"]
+layout_mode = 3
+offset_right = 510.0
+offset_bottom = 534.0
+
+[node name="MarginContainer" parent="VBoxContainer/TabContainer/Preview2d/VBoxContainer/HBoxContainer2/PreviewPanel" index="0"]
+layout_mode = 3
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PreviewTextureRect" parent="VBoxContainer/TabContainer/Preview2d/VBoxContainer/HBoxContainer2/PreviewPanel/MarginContainer" index="0"]
+layout_mode = 3
+offset_right = 510.0
+offset_bottom = 534.0
+
+[node name="ResultPanel" parent="VBoxContainer/TabContainer/Preview2d/VBoxContainer/HBoxContainer2" index="1"]
+layout_mode = 3
+offset_left = 514.0
+offset_right = 1024.0
+offset_bottom = 534.0
+
+[node name="MarginContainer" parent="VBoxContainer/TabContainer/Preview2d/VBoxContainer/HBoxContainer2/ResultPanel" index="0"]
+layout_mode = 3
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GridContainer" parent="VBoxContainer/TabContainer/Preview2d/VBoxContainer/HBoxContainer2/ResultPanel/MarginContainer" index="0"]
+layout_mode = 3
+offset_right = 510.0
+offset_bottom = 534.0
+
+[node name="OutputTextureRectR" parent="VBoxContainer/TabContainer/Preview2d/VBoxContainer/HBoxContainer2/ResultPanel/MarginContainer/GridContainer" index="0"]
+layout_mode = 3
+offset_right = 510.0
+offset_bottom = 534.0
+
+[node name="VertexShadedMesh" parent="VBoxContainer/TabContainer" instance=ExtResource("6")]
 unique_name_in_owner = true
 visible = false
-margin_top = 24.0
+offset_top = 24.0
 
-[node name="Toolbar" parent="VBoxContainer" instance=ExtResource( 2 )]
+[node name="VBoxContainer" parent="VBoxContainer/TabContainer/VertexShadedMesh" index="0"]
+offset_right = 1024.0
+offset_bottom = 541.0
+
+[node name="SubViewport" parent="VBoxContainer/TabContainer/VertexShadedMesh/VBoxContainer/SubViewportContainer" index="0"]
+size = Vector2i(1920, 1080)
+render_target_update_mode = 0
+
+[node name="Toolbar" parent="VBoxContainer" instance=ExtResource("2")]
 unique_name_in_owner = true
-margin_top = 552.0
+offset_top = 569.0
+offset_right = 1024.0
+offset_bottom = 600.0
+theme = null
+
+[node name="HBoxContainer" parent="VBoxContainer/Toolbar" index="0"]
+layout_mode = 3
+offset_right = 1024.0
+
+[node name="VSeparator3" parent="VBoxContainer/Toolbar/HBoxContainer" index="0"]
+layout_mode = 3
+offset_right = 4.0
+
+[node name="XrCheckBox" parent="VBoxContainer/Toolbar/HBoxContainer" index="1"]
+layout_mode = 3
+offset_left = 13.0
+offset_right = 62.0
+
+[node name="VSeparator4" parent="VBoxContainer/Toolbar/HBoxContainer" index="2"]
+layout_mode = 3
+offset_left = 71.0
+offset_right = 75.0
+
+[node name="Label" parent="VBoxContainer/Toolbar/HBoxContainer" index="3"]
+layout_mode = 3
+offset_left = 84.0
+offset_right = 132.0
+
+[node name="DepthSlider" parent="VBoxContainer/Toolbar/HBoxContainer" index="4"]
+layout_mode = 3
+offset_left = 141.0
+offset_right = 370.0
+
+[node name="DepthSpinBox" parent="VBoxContainer/Toolbar/HBoxContainer" index="5"]
+layout_mode = 3
+offset_left = 379.0
+offset_right = 462.0
+
+[node name="VSeparator5" parent="VBoxContainer/Toolbar/HBoxContainer" index="6"]
+layout_mode = 3
+offset_left = 471.0
+offset_right = 475.0
+
+[node name="SelectedPathLabel" parent="VBoxContainer/Toolbar/HBoxContainer" index="7"]
+layout_mode = 3
+offset_left = 484.0
+offset_right = 942.0
+
+[node name="VSeparator2" parent="VBoxContainer/Toolbar/HBoxContainer" index="8"]
+layout_mode = 3
+offset_left = 951.0
+offset_right = 955.0
+
+[node name="LoadImageButton" parent="VBoxContainer/Toolbar/HBoxContainer" index="9"]
+layout_mode = 3
+offset_left = 964.0
+offset_right = 1010.0
+
+[node name="VSeparator" parent="VBoxContainer/Toolbar/HBoxContainer" index="10"]
+layout_mode = 3
+offset_left = 1019.0
+offset_right = 1023.0
+
+[editable path="VBoxContainer/TabContainer/Preview2d"]
+[editable path="VBoxContainer/TabContainer/VertexShadedMesh"]
+[editable path="VBoxContainer/Toolbar"]

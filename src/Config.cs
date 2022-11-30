@@ -1,4 +1,4 @@
-﻿using Godot;
+using Godot;
 using Godot.Collections;
 
 namespace GodotMidasDepth;
@@ -30,7 +30,7 @@ public partial class Config {
 
     string? GetKey(ConfigKey key) => _configKeys.TryGetValue(key, out var value) ? value : null;
 
-    public void SetValue(ConfigKey key, object? value) {
+    public void SetValue(ConfigKey key, Variant value) {
         if (GetKey(key) is not { } keyString) return;
         
         _configFile?.SetValue(ConfigFileSection, keyString, value);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -8,8 +8,8 @@ using Microsoft.ML.OnnxRuntime.Tensors;
 
 namespace GodotMidasDepth.Inference; 
 
-public class InferImageDepth : IInferImageDepth {
-    readonly Image _input = new();
+public partial class InferImageDepth : IInferImageDepth {
+    Image? _input;
     float[]? _output;
     int _width = 256, _height = 256;
     InferenceSession? _session;
@@ -43,7 +43,7 @@ public class InferImageDepth : IInferImageDepth {
     }
 
     void ResetInputOutput() {
-        _input.Create(_width, _height, false, Image.Format.Rgbf);
+        _input = Image.Create(_width, _height, false, Image.Format.Rgbf);
     }
 
     public Image? Run(Image inputImage) {
@@ -61,8 +61,7 @@ public class InferImageDepth : IInferImageDepth {
         
         var normalisedOutput = NormaliseOutput(_output);
         var bytes = normalisedOutput.ToByteArray();
-        var outputImage = new Image();
-        outputImage.CreateFromData(_width, _height, false, Image.Format.Rf, bytes);
+        var outputImage = Image.CreateFromData(_width, _height, false, Image.Format.Rf, bytes);
         outputImage.Resize((int)inputSize.x, (int)inputSize.y, Image.Interpolation.Cubic);
         
         return outputImage;
@@ -108,9 +107,9 @@ public class InferImageDepth : IInferImageDepth {
             NamedOnnxValue.CreateFromTensor<float>("0", t1),
         };
 
-        using var results = _session?.Run(inputs);
+        var results = _session?.Run(inputs);
         _output = results?.First().AsEnumerable<float>().ToArray();
 
-        results?.Dispose();
+        //results?.Dispose();
     }
 }

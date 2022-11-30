@@ -1,8 +1,8 @@
-﻿using Godot;
+using Godot;
 
 namespace GodotMidasDepth.Math; 
 
-public class MachineEpsilon {
+public partial class MachineEpsilon {
     public static float CalculateMachineEpsilonForFloat()
     {
 

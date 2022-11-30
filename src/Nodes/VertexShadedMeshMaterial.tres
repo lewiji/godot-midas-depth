@@ -1,10 +1,11 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cuno0xj8voy8g"]
 
-[ext_resource path="res://shaders/vertex_shaded_mesh.tres" type="Shader" id=1]
+[ext_resource type="Shader" uid="uid://bku3i7tieix05" path="res://shaders/vertex_shaded_mesh.tres" id="1"]
 
 [resource]
 resource_local_to_scene = true
-shader = ExtResource( 1 )
-shader_param/depth_scale = 1.618
-shader_param/depth_min = -5.0
-shader_param/depth_max = 5.0
+render_priority = 0
+shader = ExtResource("1")
+shader_parameter/depth_max = 10.0
+shader_parameter/depth_min = -10.0
+shader_parameter/depth_scale = 2.0
