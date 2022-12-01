@@ -2,7 +2,7 @@
 
 Monocular depth inference and renderer in Godot 4 beta via machine learning. Inspired by: https://github.com/parkchamchi/DepthViewer
 
-https://user-images.githubusercontent.com/233380/202898966-9f1ea9a9-55f1-49a5-85dc-e5733ee0a836.mp4
+[Preview video](https://user-images.githubusercontent.com/233380/205104952-d0ba34b1-ff93-407e-a411-92d56537e7b3.webm)
 
 Uses the midas depth prediction ONNX model to infer depth from an input texture in Godot 4. The resulting depth texture is used to render the texture with adjustable depth using a vertex displacement shader + normal recalculation by averaging sampled points from multiple samples.
 
