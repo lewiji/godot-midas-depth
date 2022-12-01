@@ -7,12 +7,11 @@ using GodotMidasDepth.Nodes;
 namespace GodotMidasDepth;
 
 public partial class Main : Node {
-	/* "%PreviewPanel" */ [Export] public PreviewPanel PreviewPanel = default!;
-	/* "%ImagePicker" */ [Export] public ImagePicker ImagePicker = default!;
+	[Export] public PreviewPanel PreviewPanel = default!;
+	[Export] public ImagePicker ImagePicker = default!;
 
 	public static readonly Config Config = new Config();
 	InferImageDepth? _inferImageDepth;
-	InferImageDepthOptionalModels? _inferHybridLarge;
 
 	public override void _Ready()
 	{
@@ -23,8 +22,6 @@ public partial class Main : Node {
 	void LoadInferenceModel() {
 		_inferImageDepth = new InferImageDepth();
 		_inferImageDepth.LoadModel();
-		//_inferHybridLarge = new InferImageDepthOptionalModels();
-		//_inferHybridLarge.LoadModel();
 	}
 
 	void ConnectSignals()
@@ -46,7 +43,8 @@ public partial class Main : Node {
 		if (_inferImageDepth?.GetDataNormalised() is { } depthData)
 		{
 			var bytes = depthData.ToByteArray();
-			var outputImage = Image.CreateFromData(256, 256, false, Image.Format.Rf, bytes);
+			var dims = _inferImageDepth.GetDimensions();
+			var outputImage = Image.CreateFromData((int)dims.x, (int)dims.y, false, Image.Format.Rf, bytes);
 			PreviewPanel.CreateVertexShadedMesh(outputImage);
 			PreviewPanel.SwitchTab(1);
 		}

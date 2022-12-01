@@ -12,17 +12,17 @@ public partial class InferImageDepth : IInferImageDepth {
     Image? _input;
     float[]? _output;
     int _width = 256, _height = 256;
+    string _inputName = "0";
     InferenceSession? _session;
-    public const string DefaultModelPath = "assets/weights/MiDaS_model-small.onnx";
+    const string DefaultModelPath = "assets/weights/MiDaS_model-small.onnx";
     string _modelPath = DefaultModelPath;
 
     public void LoadModel(string path) {
         _modelPath = path;
         _session = new InferenceSession(_modelPath);
         GD.Print($"Model loaded. Version: {_session.ModelMetadata.Version}");
-        if (_modelPath == DefaultModelPath) {
-            SetDimensions(_session.InputMetadata["0"].Dimensions[2], _session.InputMetadata["0"].Dimensions[3]);
-        }
+        _inputName = _session.InputMetadata.Keys.First();
+        SetDimensions(_session.InputMetadata[_inputName].Dimensions[2], _session.InputMetadata[_inputName].Dimensions[3]);
     }
 
     public void LoadModel() {
@@ -35,6 +35,11 @@ public partial class InferImageDepth : IInferImageDepth {
 
     public float[]? GetDataNormalised() {
         return _output != null ? NormaliseOutput(_output) : null;
+    }
+
+    public Vector2 GetDimensions()
+    {
+	    return new Vector2(_width, _height);
     }
     
     void SetDimensions(int x, int y) {
@@ -53,7 +58,7 @@ public partial class InferImageDepth : IInferImageDepth {
 
         inputImage.Convert(Image.Format.Rgbf);
         inputImage.Resize(_width, _height, Image.Interpolation.Lanczos);
-        _input.CopyFrom(inputImage);
+        _input!.CopyFrom(inputImage);
 
         RunModel(_input);
 
@@ -104,12 +109,12 @@ public partial class InferImageDepth : IInferImageDepth {
         }
 
         var inputs = new List<NamedOnnxValue>() {
-            NamedOnnxValue.CreateFromTensor<float>("0", t1),
+            NamedOnnxValue.CreateFromTensor<float>(_inputName, t1),
         };
 
-        var results = _session?.Run(inputs);
+        using var results = _session?.Run(inputs);
         _output = results?.First().AsEnumerable<float>().ToArray();
 
-        //results?.Dispose();
+        results?.Dispose();
     }
 }
