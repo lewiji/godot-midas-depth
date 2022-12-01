@@ -6,3 +6,4 @@ mono_crash*
 /tmp/
 icon_depth.png
 icon_depth.png.import
+/.godot/

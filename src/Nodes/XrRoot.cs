@@ -1,13 +1,13 @@
 using Godot;
-using GodotOnReady.Attributes;
+
 
 namespace GodotMidasDepth.Nodes; 
 
-public partial class XrRoot : Spatial {
-    [OnReadyGet("%XrRig")] ARVROrigin _xrRig = default!;
+public partial class XrRoot : Node3D {
+    /* "%XrRig" */ [Export] public XROrigin3D XrRig = default!;
     
-    public void SetViewport(Viewport viewport) {
-        _xrRig.Set("viewport", viewport.GetPath());
-        _xrRig.Call("initialise");
+    public void SetViewport(SubViewport viewport) {
+        XrRig.Set("viewport", viewport.GetPath());
+        XrRig.Call("initialise");
     }
 }

@@ -1,14 +1,15 @@
 using Godot;
 using System;
-using GodotOnReady.Attributes;
+
 
 public partial class VertexShadedMesh : MarginContainer {
-	[OnReadyGet("%Viewport")] Viewport _viewport = default!;
-	[OnReady] void ConnectSignals() {
-		Connect("visibility_changed", this, nameof(OnVisibilityChanged));
+	/* "%SubViewport" */ [Export] public SubViewport Viewport = default!;
+	public override void _Ready()
+	{
+		Connect("visibility_changed",new Callable(this,nameof(OnVisibilityChanged)));
 	}
 
 	void OnVisibilityChanged() {
-		_viewport.GuiDisableInput = !Visible;
+		Viewport.GuiDisableInput = !Visible;
 	}
 }

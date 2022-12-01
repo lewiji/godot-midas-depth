@@ -1,12 +1,12 @@
-[gd_resource type="Shader" format=2]
+[gd_resource type="Shader" format=3 uid="uid://bku3i7tieix05"]
 
 [resource]
 code = "shader_type spatial;
 
-render_mode diffuse_burley, blend_mix, depth_draw_opaque, ambient_light_disabled, cull_disabled;
+render_mode diffuse_burley, blend_mix, depth_draw_opaque, specular_schlick_ggx, cull_disabled;
 
-uniform sampler2D albedo_texture : hint_albedo;
-uniform sampler2D depth_texture : hint_white;
+uniform sampler2D albedo_texture : source_color, filter_linear_mipmap_anisotropic, repeat_disable;
+uniform sampler2D depth_texture : hint_default_white, filter_linear_mipmap, repeat_disable;
 uniform float depth_scale = 2.0;
 uniform float depth_min = -10.0;
 uniform float depth_max = 10.0;
@@ -15,59 +15,48 @@ uniform bool calculate_normals = false;
 varying flat mat4 model_view_matrix;
 varying vec3 last_normal;
 
+varying vec3 normal;
+
+vec3 normalsFromHeight(vec2 uv, float texelSize, vec2 texSize, float height) {
+	vec4 h;
+	h[0] = texture(depth_texture, uv + (texelSize * vec2(0.0, -1.0 / texSize.y))).r * height;
+	h[1] = texture(depth_texture, uv + (texelSize * vec2(-1.0 / texSize.x, 0))).r * height;
+	h[2] = texture(depth_texture, uv + (texelSize * vec2(1.0 / texSize.x, 0))).r * height;
+	h[3] = texture(depth_texture, uv + (texelSize * vec2(0.0, 1.0 / texSize.y))).r * height;
+	vec3 n = vec3(-h[2] + h[1], 2.0, -h[3] + h[0]);
+	return normalize(n);
+}
+
 void vertex() {
-	float depth = texture(depth_texture, clamp(UV, 0.0, 1.0)).r;
-	VERTEX.y += depth * clamp(depth_scale, depth_min, depth_max);
-    model_view_matrix = CAMERA_MATRIX*MODELVIEW_MATRIX;
-}
-
-vec3 getPos(float depth, mat4 mvm, mat4 ipm, vec2 suv, mat4 wm, mat4 icm, float texelSize){
-  vec4 pos = inverse(mvm) * ipm * vec4((suv * texelSize - texelSize / 2.0), depth * texelSize - texelSize / 2.0, texelSize / 2.0);
-  pos.xyz /= (pos.w+0.0001*(1.-abs(sign(pos.w))));
-  return (pos*icm).xyz+wm[3].xyz;
-}
-
-// using improved version from https://www.shadertoy.com/view/fsVczR
-vec3 computeNormalImproved( sampler2D depth_tx, mat4 mvm, mat4 ipm, vec2 suv, mat4 wm, mat4 icm, vec2 iResolution, float texelSize)
-{
-    vec2 e = vec2(texelSize/iResolution);
-    float c0 = texture(depth_tx,suv           ).r;
-    float l2 = texture(depth_tx,suv-vec2(texelSize,0)*e).r;
-    float l1 = texture(depth_tx,suv-vec2(texelSize / 2.0,0)*e).r;
-    float r1 = texture(depth_tx,suv+vec2(texelSize / 2.0,0)*e).r;
-    float r2 = texture(depth_tx,suv+vec2(texelSize,0)*e).r;
-    float b2 = texture(depth_tx,suv-vec2(0,texelSize)*e).r;
-    float b1 = texture(depth_tx,suv-vec2(0,texelSize / 2.0)*e).r;
-    float t1 = texture(depth_tx,suv+vec2(0,texelSize / 2.0)*e).r;
-    float t2 = texture(depth_tx,suv+vec2(0,texelSize)*e).r;
-
-    float dl = abs(l1*l2/(texelSize * 2.0 *l2-l1)-c0);
-    float dr = abs(r1*r2/(texelSize * 2.0*r2-r1)-c0);
-    float db = abs(b1*b2/(texelSize * 2.0*b2-b1)-c0);
-    float dt = abs(t1*t2/(texelSize * 2.0*t2-t1)-c0);
-
-    vec3 ce = getPos(c0, mvm, ipm, suv, wm, icm, texelSize);
-
-    vec3 dpdx = (dl<dr) ?  ce-getPos(l1, mvm, ipm, suv-vec2(texelSize,0)*e, wm, icm, texelSize) : 
-                          -ce+getPos(r1, mvm, ipm, suv+vec2(texelSize,0)*e, wm, icm, texelSize) ;
-    vec3 dpdy = (db<dt) ?  ce-getPos(b1, mvm, ipm, suv-vec2(0,texelSize)*e, wm, icm, texelSize) : 
-                          -ce+getPos(t1, mvm, ipm, suv+vec2(0,texelSize)*e, wm, icm, texelSize) ;
-
-    return mix(normalize(cross(dpdx,dpdy)), last_normal, 0.1);
+	float clamped_scale = clamp(depth_scale, depth_min, depth_max);
+	float depth0 = texture(depth_texture, clamp(UV, vec2(0.005, 0.005), vec2(0.99, 0.995))).r;
+	float depth1 = texture(depth_texture, clamp(UV + vec2(0.001, 0), vec2(0.005, 0.005), vec2(0.99, 0.995))).r;
+	float depth2 = texture(depth_texture, clamp(UV + vec2(0, 0.001), vec2(0.005, 0.005), vec2(0.99, 0.995))).r;
+	vec3 v0 = VERTEX.xyz;
+	vec3 bitangent = cross(NORMAL, TANGENT);
+	vec3 v1 = v0 + (TANGENT * 0.01);
+	vec3 v2 = v0 + (bitangent * 0.01);
+	float ns0 = v0.y + depth0 * clamped_scale;
+	float ns1 = v1.y + depth1 * clamped_scale;
+	float ns2 = v2.y + depth2 * clamped_scale;
+	
+	v0.xyz += ns0 * NORMAL;
+	v1.xyz += ns1 * NORMAL;
+	v2.xyz += ns2 * NORMAL;
+	
+	vec3 modifiedNormal = cross(v2-v0, v1-v0);
+	normal = normalize(-modifiedNormal);
+	
+	VERTEX = v0;
+	NORMAL = normalsFromHeight(UV, 1.0, vec2(textureSize(depth_texture, 0)), clamped_scale);
+	//NORMAL = normalize(-modifiedNormal);
 }
 
 void fragment() {
-	int lod = int(clamp(round(abs(WORLD_MATRIX[3].xyz - CAMERA_MATRIX[3].xyz).z / depth_max / 2.0), 0.0, 3.0));
-	vec2 texture_size = vec2(textureSize(albedo_texture, lod));
-	vec2 xy = UV * texture_size;
-	vec4 albedo = texelFetch(albedo_texture, ivec2(xy), int(lod));
+	int lod = int(clamp(round(abs(MODEL_MATRIX[3].xyz - INV_VIEW_MATRIX[3].xyz).z / depth_max / 2.0), 0.0, 3.0));
+	vec2 xy = UV * vec2(textureSize(albedo_texture, lod));
+	vec4 albedo = texelFetch(albedo_texture, ivec2(xy), lod);
 	ALBEDO = albedo.rgb;
-	
-	if (calculate_normals) {
-		vec2 texture_size_no_lod = vec2(textureSize(albedo_texture, 0));
-		vec3 norm = computeNormalImproved(depth_texture, model_view_matrix, INV_PROJECTION_MATRIX, UV, WORLD_MATRIX, INV_CAMERA_MATRIX, texture_size, texture_size_no_lod.x / 256.0);
-		NORMAL = vec3(-norm.x, -norm.y, 1.0-norm.z) * 0.5;
-		last_normal = NORMAL;
-	}
+	//NORMAL = normal;
 }
 "

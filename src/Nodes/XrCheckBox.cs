@@ -1,29 +1,31 @@
 using Godot;
-using GodotOnReady.Attributes;
+
 
 namespace GodotMidasDepth.Nodes; 
 
 public partial class XrCheckBox : CheckBox
 {
 	[Signal]
-	public delegate void XrToggled(bool enabled);
-	
-	[OnReadyGet("%XrCheckBox")] CheckBox _xrCheckbox = default!;
-	
-	[OnReady]
-	void ConnectSignals() {
-		_xrCheckbox.Connect("toggled", this, nameof(OnXrToggled));
+	public delegate void XrToggledEventHandler(bool enabled);
+
+	public override void _Ready()
+	{
+		ConnectSignals();
+		FindXrRuntime();
 	}
 
-	[OnReady]
+	void ConnectSignals() {
+		Toggled += OnXrToggled;
+	}
+
 	void FindXrRuntime() {
-		var xrInterface = ARVRServer.FindInterface("OpenXR");
+		var xrInterface = XRServer.FindInterface("OpenXR");
 		Disabled = xrInterface == null;
 		GD.Print($"XR {(Disabled ? "disabled" : "enabled")}");
 	}
 	
 	void OnXrToggled(bool enabled) {
-		EmitSignal(nameof(XrToggled), enabled);
+		EmitSignal(SignalName.XrToggled, enabled);
 	}
 
 	

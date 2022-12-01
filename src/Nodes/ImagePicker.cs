@@ -1,13 +1,13 @@
 using Godot;
-using GodotOnReady.Attributes;
+
 
 namespace GodotMidasDepth.Nodes; 
 
 public partial class ImagePicker : Control {
-    [OnReadyGet("%FileDialog")] FileDialog _fileDialog = default!;
-    [OnReadyGet("%PreviewTexture")] TextureRect _previewTextureRect = default!;
-    [OnReadyGet("%CanvasLayer")] CanvasLayer _canvasLayer = default!;
-    [OnReadyGet("%BackgroundContainer")] Control _bg = default!;
+    /* "%FileDialog" */ [Export] public FileDialog FileDialog = default!;
+    /* "%PreviewTexture" */ [Export] public TextureRect PreviewTextureRect = default!;
+    /* "%CanvasLayer" */ [Export] public CanvasLayer CanvasLayer = default!;
+    /* "%BackgroundContainer" */ [Export] public Control Bg = default!;
     
     Tree? _fileTree;
     LineEdit? _fileDirectoryLineEdit;
@@ -15,28 +15,34 @@ public partial class ImagePicker : Control {
     public string InitialPath = "";
 
     [Signal]
-    public delegate void ImageLoaded(Image image);
+    public delegate void ImageLoadedEventHandler(Image image);
     
     [Signal]
-    public delegate void PathSelected(string path);
+    public delegate void PathSelectedEventHandler(string path);
 
-    [OnReady]
+    public override void _Ready()
+    {
+	    ConnectFileDialogSignals();
+    }
+	
+
     void ConnectFileDialogSignals() {
         if (Main.Config.GetValue(Config.ConfigKey.LastPath) is string lastPath) {
             InitialPath = lastPath;
         }
-        _fileDialog.Connect("file_selected", this, nameof(OnFileSelected));
-        _fileDialog.Connect("popup_hide", this, nameof(ResetVisibility));
+        FileDialog.FileSelected += OnFileSelected;
+        FileDialog.CloseRequested += ResetVisibility;
+        FileDialog.FileSelected += (_) => ResetVisibility();
         
         GetInternalComponentsFromFileDialog();
         ResetVisibility();
     }
 
     void GetInternalComponentsFromFileDialog() {
-	    var vbox = _fileDialog.GetVbox();
+	    var vbox = FileDialog.GetVbox();
 	    _fileTree = vbox.GetChild(2).GetChild(0) as Tree;
-	    _fileDirectoryLineEdit = (LineEdit) _fileDialog.GetVbox().GetChild(0).GetChild(3);
-	    _fileTree?.Connect("item_selected", this, nameof(OnTreeItemSelected));
+	    _fileDirectoryLineEdit = (LineEdit) FileDialog.GetVbox().GetChild(0).GetChild(5);
+	    if (_fileTree != null) _fileTree.ItemSelected += OnTreeItemSelected;
     }
 
 
@@ -46,40 +52,38 @@ public partial class ImagePicker : Control {
 	    var itemText = item.GetText(0);
 	    var dirPath = _fileDirectoryLineEdit?.Text;
 	    var filePath = $"{dirPath}/{itemText}";
-	    var file = new File();
 
-	    if (filePath.GetFile() != "" && file.FileExists(filePath)) {
-		    using var image = new Image();
+	    if (filePath.GetFile() != "" && FileAccess.FileExists(filePath)) {
+		    var image = new Image();
 
 		    if (image.Load(filePath) == Error.Ok) {
-			    var tex = new ImageTexture();
-			    tex.CreateFromImage(image, (uint)Texture.FlagsEnum.Filter | (uint)Texture.FlagsEnum.Mipmaps | (uint)Texture.FlagsEnum.AnisotropicFilter);
-			    _previewTextureRect.Texture = tex;
+			    var tex = ImageTexture.CreateFromImage(image); 
+			    PreviewTextureRect.Texture = tex;
 		    }
 	    }
     }
 
     void ResetVisibility() {
-	    _canvasLayer.Visible = false;
-	    _bg.Visible = false;
+	    CanvasLayer.Visible = false;
+	    Bg.Visible = false;
     }
 
     public void Open() {
         if (InitialPath != "") {
-            _fileDialog.CurrentDir = InitialPath;
+            FileDialog.CurrentDir = InitialPath;
         }
-        _fileDialog.Popup_();
-        _canvasLayer.Visible = true;
-        _bg.Visible = true;
+        FileDialog.Popup();
+        CanvasLayer.Visible = true;
+        Bg.Visible = true;
     }
 
     void OnFileSelected(string path) {
         var image = new Image();
         if (image.Load(path) == Error.Ok) {
-            EmitSignal(nameof(ImageLoaded), image);
+            EmitSignal(SignalName.ImageLoaded, image);
         }
 
-        EmitSignal(nameof(PathSelected), path);
+        EmitSignal(SignalName.PathSelected, path);
         Main.Config.SetValue(Config.ConfigKey.LastPath, path.GetBaseDir());
     }
 }

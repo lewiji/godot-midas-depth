@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -8,21 +8,21 @@ using Microsoft.ML.OnnxRuntime.Tensors;
 
 namespace GodotMidasDepth.Inference; 
 
-public class InferImageDepth : IInferImageDepth {
-    readonly Image _input = new();
+public partial class InferImageDepth : IInferImageDepth {
+    Image? _input;
     float[]? _output;
     int _width = 256, _height = 256;
+    string _inputName = "0";
     InferenceSession? _session;
-    public const string DefaultModelPath = "assets/weights/MiDaS_model-small.onnx";
+    const string DefaultModelPath = "assets/weights/MiDaS_model-small.onnx";
     string _modelPath = DefaultModelPath;
 
     public void LoadModel(string path) {
         _modelPath = path;
         _session = new InferenceSession(_modelPath);
         GD.Print($"Model loaded. Version: {_session.ModelMetadata.Version}");
-        if (_modelPath == DefaultModelPath) {
-            SetDimensions(_session.InputMetadata["0"].Dimensions[2], _session.InputMetadata["0"].Dimensions[3]);
-        }
+        _inputName = _session.InputMetadata.Keys.First();
+        SetDimensions(_session.InputMetadata[_inputName].Dimensions[2], _session.InputMetadata[_inputName].Dimensions[3]);
     }
 
     public void LoadModel() {
@@ -36,6 +36,11 @@ public class InferImageDepth : IInferImageDepth {
     public float[]? GetDataNormalised() {
         return _output != null ? NormaliseOutput(_output) : null;
     }
+
+    public Vector2 GetDimensions()
+    {
+	    return new Vector2(_width, _height);
+    }
     
     void SetDimensions(int x, int y) {
         _width = x;
@@ -43,7 +48,7 @@ public class InferImageDepth : IInferImageDepth {
     }
 
     void ResetInputOutput() {
-        _input.Create(_width, _height, false, Image.Format.Rgbf);
+        _input = Image.Create(_width, _height, false, Image.Format.Rgbf);
     }
 
     public Image? Run(Image inputImage) {
@@ -53,7 +58,7 @@ public class InferImageDepth : IInferImageDepth {
 
         inputImage.Convert(Image.Format.Rgbf);
         inputImage.Resize(_width, _height, Image.Interpolation.Lanczos);
-        _input.CopyFrom(inputImage);
+        _input!.CopyFrom(inputImage);
 
         RunModel(_input);
 
@@ -61,8 +66,7 @@ public class InferImageDepth : IInferImageDepth {
         
         var normalisedOutput = NormaliseOutput(_output);
         var bytes = normalisedOutput.ToByteArray();
-        var outputImage = new Image();
-        outputImage.CreateFromData(_width, _height, false, Image.Format.Rf, bytes);
+        var outputImage = Image.CreateFromData(_width, _height, false, Image.Format.Rf, bytes);
         outputImage.Resize((int)inputSize.x, (int)inputSize.y, Image.Interpolation.Cubic);
         
         return outputImage;
@@ -105,7 +109,7 @@ public class InferImageDepth : IInferImageDepth {
         }
 
         var inputs = new List<NamedOnnxValue>() {
-            NamedOnnxValue.CreateFromTensor<float>("0", t1),
+            NamedOnnxValue.CreateFromTensor<float>(_inputName, t1),
         };
 
         using var results = _session?.Run(inputs);

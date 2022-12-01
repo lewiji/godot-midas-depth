@@ -1,6 +1,6 @@
-[gd_resource type="CubeMesh" load_steps=2 format=2]
+[gd_resource type="BoxMesh" load_steps=2 format=2]
 
-[sub_resource type="SpatialMaterial" id=3]
+[sub_resource type="StandardMaterial3D" id=3]
 vertex_color_use_as_albedo = true
 vertex_color_is_srgb = true
 params_diffuse_mode = 2

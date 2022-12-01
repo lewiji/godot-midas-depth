@@ -1,64 +1,64 @@
 using System.Globalization;
 using Godot;
 using Godot.Collections;
-using GodotOnReady.Attributes;
+
 
 namespace GodotMidasDepth.Nodes; 
 
 public partial class PreviewPanel : PanelContainer
 {
-    [OnReadyGet("%Preview2d/%PreviewTextureRect")] TextureRect _previewTextureRect = default!;
-    [OnReadyGet("%Preview2d/%OutputTextureRectR")] TextureRect _outputTextureRectR = default!;
-    [OnReadyGet("%Toolbar/%LoadImageButton")] Button _loadImageButton = default!;
-    [OnReadyGet("%Toolbar/%SelectedPathLabel")] Label _pathLabel = default!;
-    [OnReadyGet("%VertexShadedMesh/%VertexShadedMeshSpatial")] VertexShadedMeshSpatial _vertexShadedMesh = default!;
-    [OnReadyGet("%TabContainer")] TabContainer _tabContainer = default!;
-    [OnReadyGet("%Toolbar/%XrCheckBox")] XrCheckBox _xrCheckBox = default!;
-    [OnReadyGet("%Toolbar/%DepthSlider")] Slider _depthSlider = default!;
-	[OnReadyGet("%Toolbar/%DepthSpinBox")] SpinBox _depthSpinBox = default!;
+    /* "%Preview2d/%PreviewTextureRect" */ [Export] public TextureRect PreviewTextureRect = default!;
+    /* "%Preview2d/%OutputTextureRectR" */ [Export] public TextureRect OutputTextureRectR = default!;
+    /* "%Toolbar/%LoadImageButton" */ [Export] public Button LoadImageButton = default!;
+    /* "%Toolbar/%SelectedPathLabel" */ [Export] public Label PathLabel = default!;
+    /* "%VertexShadedMesh/%VertexShadedMeshSpatial" */ [Export] public VertexShadedMeshSpatial VertexShadedMesh = default!;
+    /* "%TabContainer" */ [Export] public TabContainer TabContainer = default!;
+    /* "%Toolbar/%XrCheckBox" */ [Export] public XrCheckBox XrCheckBox = default!;
+    /* "%Toolbar/%DepthSlider" */ [Export] public Slider DepthSlider = default!;
+		/* "%Toolbar/%DepthSpinBox" */ [Export] public SpinBox DepthSpinBox = default!;
     
-    Image? _image;
-    Image? _depth;
+    Image? _image { get; set; }
+    Image? _depth { get; set; }
 
     [Signal]
-    public delegate void LoadImageRequested();
+    public delegate void LoadImageRequestedEventHandler();
     
     static PackedScene _xrRootScene = GD.Load<PackedScene>("res://src/Nodes/XrRoot.tscn");
     XrRoot? _xrRoot;
 
-    [OnReady]
-    void ConnectSignals() {
-        _loadImageButton.Connect("pressed", this, nameof(OnLoadImagePressed));
-        _xrCheckBox.Connect(nameof(XrCheckBox.XrToggled), this, nameof(OnXrToggled));
-        _depthSlider.Connect("value_changed", this, nameof(OnDepthChanged));
-        _depthSpinBox.Connect("value_changed", this, nameof(OnDepthSpinBoxChanged));
-        OnDepthChanged((float)_depthSlider.Value);
+    public override void _Ready()
+    {
+	    LoadImageButton.Pressed += OnLoadImagePressed;
+	    XrCheckBox.XrToggled += OnXrToggled;
+	    DepthSlider.ValueChanged += OnDepthChanged;
+	    DepthSpinBox.ValueChanged += OnDepthSpinBoxChanged;
+	    OnDepthChanged(DepthSlider.Value);
     }
 
-    public override void _Process(float delta) {
+    public override void _Process(double delta) {
 	    if (Input.IsActionPressed("depth_increase")) {
-		    _depthSlider.Value += _depthSlider.Step / delta;
+		    DepthSlider.Value += DepthSlider.Step / delta;
 	    }
 	    if (Input.IsActionPressed("depth_decrease")) {
-		    _depthSlider.Value -= _depthSlider.Step / delta;
+		    DepthSlider.Value -= DepthSlider.Step / delta;
 	    }
     }
 
-    void OnDepthChanged(float value) {
-	    _depthSpinBox.Value = value;
-	    _vertexShadedMesh.CallDeferred(nameof(VertexShadedMeshSpatial.SetShaderDepth), value);
+    void OnDepthChanged(double value) {
+	    DepthSpinBox.Value = value;
+	    VertexShadedMesh.CallDeferred(nameof(VertexShadedMeshSpatial.SetShaderDepth), value);
     }
 
-    void OnDepthSpinBoxChanged(float value) {
-	    if (!Mathf.IsEqualApprox((float)_depthSlider.Value, value)) {
-		    _depthSlider.Value = value;
+    void OnDepthSpinBoxChanged(double value) {
+	    if (!Mathf.IsEqualApprox((float)DepthSlider.Value, (float)value)) {
+		    DepthSlider.Value = value;
 	    }
     }
 
 
     void OnXrToggled(bool enabled) {
         if (enabled && _xrRoot == null) {
-            _xrRoot = _xrRootScene.Instance<XrRoot>();
+            _xrRoot = _xrRootScene.Instantiate<XrRoot>();
             AddChild(_xrRoot);
         }
         else if (enabled && (_xrRoot != null && !_xrRoot.IsInsideTree())) {
@@ -69,47 +69,45 @@ public partial class PreviewPanel : PanelContainer
         }
 
         if (_xrRoot != null && _xrRoot.IsInsideTree()) {
-            _xrRoot.SetViewport(_vertexShadedMesh.GetParent<Viewport>());
+            _xrRoot.SetViewport(VertexShadedMesh.GetParent<SubViewport>());
         }
     }
 
     public void SwitchTab(int to) {
-	    if (_tabContainer.GetTabCount() > to) {
-		    _tabContainer.CurrentTab = to;
+	    if (TabContainer.GetTabCount() > to) {
+		    TabContainer.CurrentTab = to;
 	    }
     }
 
-    void OnLoadImagePressed() {
-        EmitSignal(nameof(LoadImageRequested));
+    void OnLoadImagePressed()
+    {
+	    EmitSignal(SignalName.LoadImageRequested);
     }
 
     public void SetPreviewImage(Image image) {
         _image = image;
-        var tex = new ImageTexture();
-        tex.Flags = (uint)Texture.FlagsEnum.Filter | (uint)Texture.FlagsEnum.Mipmaps | (uint)Texture.FlagsEnum.AnisotropicFilter;
-        tex.CreateFromImage(image, (uint)Texture.FlagsEnum.Filter | (uint)Texture.FlagsEnum.Mipmaps | (uint)Texture.FlagsEnum.AnisotropicFilter);
-        _previewTextureRect.Texture = tex;
+        _image.Reference();
+        var tex = ImageTexture.CreateFromImage(image);
+        PreviewTextureRect.Texture = tex;
     }
 
     public void SetPathLabel(string path) {
-        _pathLabel.Text = path;
+        PathLabel.Text = path;
     }
     
     public void SetResultImage(Image image) {
         _depth = image;
-        var tex = new ImageTexture();
-        tex.CreateFromImage(image, (uint)Texture.FlagsEnum.Filter);
-        _outputTextureRectR.Texture = tex;
-        ResourceSaver.Save("user://input_tmp.png", tex);
-        ResourceSaver.Save("user://output_tmp.png", _previewTextureRect.Texture);
+        var tex = ImageTexture.CreateFromImage(image);
+        OutputTextureRectR.Texture = tex;
+        ResourceSaver.Save(tex , "user://input_tmp.png");
+        ResourceSaver.Save(PreviewTextureRect.Texture, "user://output_tmp.png");
     }
 
     public void CreateVertexShadedMesh(Image outputImage) {
 	    if (_image != null) {
-		    ImageTexture tex = new ImageTexture();
 		    outputImage.Resize(_image.GetWidth(), _image.GetHeight(), Image.Interpolation.Lanczos);
-		    tex.CreateFromImage(outputImage, (uint)Texture.FlagsEnum.Filter);
-		    _vertexShadedMesh.SetTextures(_previewTextureRect.Texture, tex);
+		    var tex = ImageTexture.CreateFromImage(outputImage);
+		    VertexShadedMesh.SetTextures(PreviewTextureRect.Texture, tex);
 	    }
     }
 }

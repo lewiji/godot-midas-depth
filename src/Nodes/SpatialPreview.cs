@@ -1,71 +1,75 @@
 using System.Globalization;
 using Godot;
-using GodotOnReady.Attributes;
+
 
 namespace GodotMidasDepth.Nodes; 
 
-public partial class SpatialPreview : Spatial {
-    [OnReadyGet("%Camera")] Camera _camera = default!;
-    [OnReadyGet("%PreviewSprite")] Sprite3D? _sprite3d;
-    [OnReadyGet("%DepthSlider")] Slider _depthSlider = default!;
-    [OnReadyGet("%DepthEdit")] LineEdit _depthEdit = default!;
+public partial class SpatialPreview : Node3D {
+    /* "%Camera3D" */ [Export] public Camera3D Camera = default!;
+    /* "%PreviewSprite" */ [Export] public Sprite3D? Sprite3d;
+    /* "%DepthSlider" */ [Export] public Slider DepthSlider = default!;
+    /* "%DepthEdit" */ [Export] public LineEdit DepthEdit = default!;
     
-    float _depth = 0.05f;
+    double _depth = 0.05f;
 
-    public float Depth {
+    public double Depth {
         get {
-            if (_sprite3d is {MaterialOverride: { }})
+            if (Sprite3d is {MaterialOverride: { }})
             {
-                return  ((SpatialMaterial) _sprite3d.MaterialOverride).DepthScale;
+                return  ((StandardMaterial3D) Sprite3d.MaterialOverride).HeightmapScale;
             }
             return _depth;
         }
         set {
             _depth = value;
-            if (_sprite3d is {MaterialOverride: { }}) 
+            if (Sprite3d is {MaterialOverride: { }}) 
             {
-                ((SpatialMaterial) _sprite3d.MaterialOverride).DepthScale = _depth;
+                ((StandardMaterial3D) Sprite3d.MaterialOverride).HeightmapScale = (float)_depth;
             }
         }
     }
 
-    [OnReady]
-    void ConnectDepthSlider()
+    public override void _Ready()
     {
-        _depthSlider.Connect("value_changed", this, nameof(OnDepthChanged));
-    }
-    
-    [OnReady]
-    void SetDepthUiValues() {
-        var depth = Depth;
-        _depthEdit.Text = depth.ToString(CultureInfo.CurrentCulture);
-        _depthSlider.Value = depth;
+	    ConnectDepthSlider();
+	    SetDepthUiValues();
     }
 
-    void OnDepthChanged(float value) {
+    void ConnectDepthSlider()
+    {
+        DepthSlider.ValueChanged += OnDepthChanged;
+    }
+    
+    void SetDepthUiValues() {
+        var depth = Depth;
+        DepthEdit.Text = depth.ToString(CultureInfo.CurrentCulture);
+        DepthSlider.Value = depth;
+    }
+
+    void OnDepthChanged(double value) {
         Depth = value;
-        _depthEdit.Text = value.ToString(CultureInfo.CurrentCulture);
+        DepthEdit.Text = value.ToString(CultureInfo.CurrentCulture);
     }
 
     public override void _Input(InputEvent @event) {
-        if (_sprite3d == null) return;
+        if (Sprite3d == null) return;
         
         if (Input.IsActionPressed("camera_zoom_in")) 
         {
-            _sprite3d.PixelSize += 0.001f;
+            Sprite3d.PixelSize += 0.001f;
         }
         
         if (Input.IsActionPressed("camera_zoom_out")) 
         {
-            _sprite3d.PixelSize -= 0.001f;
+            Sprite3d.PixelSize -= 0.001f;
         }
     }
 
-    public void SetSpriteTexture(Texture? albedoTex, Texture? depthTex) {
-        if (_sprite3d == null) return;
+    public void SetSpriteTexture(Texture2D? albedoTex, Texture2D? depthTex) {
+        if (Sprite3d == null) return;
         
-        var sprite3dMaterial = ((SpatialMaterial)_sprite3d.MaterialOverride);
+        var sprite3dMaterial = ((StandardMaterial3D)Sprite3d.MaterialOverride);
         sprite3dMaterial.AlbedoTexture = albedoTex;
-        sprite3dMaterial.DepthTexture = depthTex;
+        sprite3dMaterial.HeightmapTexture = depthTex;
     }
 }
